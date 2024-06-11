@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+
+
+/*Colores principales de la aplicación*/
+:root {
+    --destacado: #CFF709;
+    --negro: #000000;
+    --blanco: #FFFFFF;
+    --gris-oscuro: #333333;
+    --gris-claro: #CCCCCC;
+    --alerta: #F12A2A;
+    --exitos: #2AB5F1;
+}
+
+.bg-destacado {
+    background-color: var(--destacado);
+}
+
