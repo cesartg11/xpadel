@@ -19,30 +19,36 @@ class CourtController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateUpdateCourtRequest $request, ClubProfile $club)
+    public function store(CreateUpdateCourtRequest $request, $clubId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
+            dd("NO AUTH");
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
+            dd("NO CLUB");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
+        $club = ClubProfile::findOrFail($clubId);
+
         if ($user->clubProfile->id !== $club->id) {
+            dd("NO MISMO CLUB");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
         try {
             Court::create([
-                'club_profile_id' => $club->id,
+                'club_profile_id' => $user->clubProfile->id,
                 'number' => $request->number,
                 'type' => $request->type,
             ]);
 
-            return redirect('clubs.index')->with('success', 'Pista creada con éxito');
+            return redirect()->back()->with('success', 'Pista creadda con éxito.');
         } catch (Exception $e) {
+            dd($e->getMessage());
             return redirect('clubs.index')->with('error', 'No se pudo crear la pista. ' . $e->getMessage());
         }
     }
@@ -57,7 +63,7 @@ class CourtController extends Controller
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('user')) {
+        if (!$user->hasRole('user')) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
@@ -120,7 +126,7 @@ class CourtController extends Controller
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
@@ -150,7 +156,7 @@ class CourtController extends Controller
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('user')) {
+        if (!$user->hasRole('user')) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
@@ -202,7 +208,7 @@ class CourtController extends Controller
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
@@ -229,7 +235,7 @@ class CourtController extends Controller
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('user')) {
+        if (!$user->hasRole('user')) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'No tienes permiso para realizar esta acción.');
         }
 

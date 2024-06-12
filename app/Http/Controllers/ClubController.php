@@ -68,7 +68,11 @@ class ClubController extends Controller
 
             $user->assignRole('club');
 
-            $user->clubProfile()->create([
+
+            $club = $user->clubProfile();
+
+            // Crea el perfil del club
+            $club = $user->clubProfile()->create([
                 'name' => $request->name,
                 'telephone' => $request->telephone,
                 'address' => $request->address,
@@ -79,7 +83,13 @@ class ClubController extends Controller
 
             Auth::login($user);
 
-            return redirect()->route('clubs.index');
+            if(auth()->user()){
+                return redirect()->route('clubs.show', ['club' => $club]);
+            }else{
+                DB::rollback();
+                return redirect()->route('register')->with('error', 'No se pudo crear el club.');
+            }
+
         } catch (Exception $e) {
             dd($e->getMessage());
             DB::rollback();
@@ -219,16 +229,19 @@ class ClubController extends Controller
 
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
+            dd("no auth");
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
         if (!$user->hasRole('club')) {
+            dd("no rol club");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
         $clubProfile = ClubProfile::findOrFail($clubProfileId);
 
         if ($user->clubProfile->id !== $clubProfile->id) {
+            dd("no club roefile igual a id");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
@@ -252,6 +265,7 @@ class ClubController extends Controller
             DB::commit();
             return redirect()->back();
         } catch (Exception $e) {
+            dd($e->getMessage());
             DB::rollback();
             return redirect()->back()->withErrors('Error al subir la imagen de cabecera: ' . $e->getMessage());
         }
@@ -265,16 +279,19 @@ class ClubController extends Controller
 
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
+            dd("no auth");
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
         if (!$user->hasRole('club')) {
+            dd("Error rol no club");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
         $clubProfile = ClubProfile::findOrFail($clubProfileId);
 
         if ($user->clubProfile->id !== $clubProfile->id) {
+            dd("Error club prof noigual a id");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
@@ -305,6 +322,7 @@ class ClubController extends Controller
             DB::commit();
             return redirect()->back();
         } catch (Exception $e) {
+            dd($e->getMessage());
             DB::rollback();
             return redirect()->back()->withErrors('Error al subir la imagen: ' . $e->getMessage());
         }

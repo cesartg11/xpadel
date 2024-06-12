@@ -19,47 +19,49 @@ class ClubClassController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateUpdateClassRequest $request, ClubProfile $club)
+    public function store(CreateUpdateClassRequest $request, $clubId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
-        if ($$user->clubProfile->id !== $club->id) {
+        $club = ClubProfile::findOrFail($clubId);
+
+        if ($user->clubProfile->id !== $club->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
-        $startDateTime = Carbon::parse($request->start_time);
-        $endDateTime = Carbon::parse($request->end_time);
-        $dayOfWeek = $startDateTime->format('l');
+        // $startDateTime = Carbon::parse($request->start_time);
+        // $endDateTime = Carbon::parse($request->end_time);
+        // $dayOfWeek = $startDateTime->format('l');
 
-        $clubHour = $club->hours()->where('day_of_week', $dayOfWeek)->first();
+        // $clubHour = $club->hours()->where('day_of_week', $dayOfWeek)->first();
 
-        if (!$clubHour) {
-            return redirect()->route('clubs.index')->with('error', 'No se encontró el horario para el día seleccionado.');
-        }
+        // if (!$clubHour) {
+        //     return redirect()->route('clubs.index')->with('error', 'No se encontró el horario para el día seleccionado.');
+        // }
 
-        if ($startDateTime->lt(Carbon::parse($clubHour->opening_time)) || $endDateTime->gt(Carbon::parse($clubHour->closing_time))) {
-            return redirect()->route('clubs.index')->with('error', "La clase debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
-        }
+        // if ($startDateTime->lt(Carbon::parse($clubHour->opening_time)) || $endDateTime->gt(Carbon::parse($clubHour->closing_time))) {
+        //     return redirect()->route('clubs.index')->with('error', "La clase debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
+        // }
 
         try {
             ClubClass::create([
-                'club_profile_id' => $club->id,
-                'court_id' => $request->court,
-                'level' => $request->title,
+                'club_profile_id' => $user->clubProfile->id,
+                'court_id' => $request->court_id,
+                'level' => $request->level,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
             ]);
 
-            return redirect()->route('classes.index')->with('success', 'Clase creada con éxito.');
+            return redirect()->back()->with('success', 'Clase creada con éxito.');
         } catch (Exception $e) {
-            return redirect()->route('classes.index')->with('error', 'Error al crear la clase: ' . $e->getMessage());
+            return redirect()->route('clubs.show', compact('club'))->with('error', 'Error al crear la clase: ' . $e->getMessage());
         }
     }
 

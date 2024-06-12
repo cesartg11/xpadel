@@ -20,16 +20,18 @@ class TournamentController extends Controller
     /**
      * Crea un nuevo alquiler en una pista de un club determinado
      */
-    public function store(CreateUpdateTournamentRequest $request, ClubProfile $club)
+    public function store(CreateUpdateTournamentRequest $request, $clubId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
+
+        $club = ClubProfile::findOrFail($clubId);
 
         if ($user->clubProfile->id !== $club->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
@@ -37,7 +39,7 @@ class TournamentController extends Controller
 
         try {
             Tournament::create([
-                'club_profile_id' => $club->id,
+                'club_profile_id' => $user->clubProfile->id,
                 'name' => $request->name,
                 'status' => $request->status,
                 'description' => $request->description,
@@ -46,7 +48,7 @@ class TournamentController extends Controller
                 'end_date' => $request->end_date,
             ]);
 
-            return redirect('clubs.show', compact('club'))->with('success', 'Torneo creado con éxito.');
+            return redirect()->back()->with('success', 'Torneo creado con éxito.');
         } catch (Exception $e) {
             return redirect('clubs.show', compact('club'))->with('error', 'No se pudo crear el torneo. ' . $e->getMessage());
         }

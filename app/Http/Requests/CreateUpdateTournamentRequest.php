@@ -23,11 +23,11 @@ class CreateUpdateTournamentRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:tournaments',
-            'status' => 'required|string|in:planned,ongoing,completed',
+            'status' => 'required|string|in:Abierto,Cerrado,En progreso',
             'description' => 'required|string|max:5000',
             'photo_url' => 'nullable|file|mimes:jpeg,jpg,png',
-            'start_date' => 'required|date_format:"d-m-Y H:i"',
-            'end_date' => 'required|date_format:"d-m-Y H:i"|after:start_date',
+            'start_date' => 'required|date_format:"Y-m-d"',
+            'end_date' => 'required|date_format:"Y-m-d"|after:start_date',
         ];
     }
 
@@ -51,9 +51,9 @@ class CreateUpdateTournamentRequest extends FormRequest
             'photo_url.file' => 'El archivo debe ser una imagen.',
             'photo_url.mimes' => 'El archivo debe ser de tipo jpeg, jpg, o png.',
             'start_date.required' => 'La fecha de inicio del torneo es obligatoria.',
-            'start_date.date_format' => 'La fecha de inicio debe estar en el formato día-mes-año hora:minuto.',
+            'start_date.date_format' => 'La fecha de inicio debe estar en el formato debido.',
             'end_date.required' => 'La fecha de fin del torneo es obligatoria.',
-            'end_date.date_format' => 'La fecha de fin debe estar en el formato día-mes-año hora:minuto.',
+            'end_date.date_format' => 'La fecha de fin debe estar en el formato debido.',
             'end_date.after' => 'La fecha de fin debe ser posterior a la fecha de inicio.'
         ];
     }

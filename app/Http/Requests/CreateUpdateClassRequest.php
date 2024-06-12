@@ -24,10 +24,10 @@ class CreateUpdateClassRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'court' => 'required|exists:courts,id',
+            'court_id' => 'required|exists:courts,id',
             'level' => 'required|in:Pro,Principiante,Medio',
-            'start_time' => 'required|date_format:"d-m-Y H:i"',
-            'end_time' => 'required|date_format:"d-m-Y H:i"|after:start_time',
+            'start_time' => 'required|date_format:"Y-m-d\TH:i"',
+            'end_time' => 'required|date_format:"Y-m-d\TH:i"|after:start_time'
         ];
     }
 
@@ -39,8 +39,8 @@ class CreateUpdateClassRequest extends FormRequest
     public function messages()
     {
         return [
-            'court.required' => 'Debe seleccionar una pista obligatoriamente',
-            'court.exists' => 'La pista seleccionada no existe.',
+            'court_id.required' => 'Debe seleccionar una pista obligatoriamente',
+            'court_id.exists' => 'La pista seleccionada no existe.',
 
             'level.required' => 'El nivel de la clase es obligatorio.',
             'level.string' => 'El nivel debe ser una cadena de texto.',

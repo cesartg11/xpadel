@@ -25,7 +25,7 @@ class CourtRentalFactory extends Factory
         $user = $this->faker->randomElement($users);
         $court = $this->faker->randomElement($courts);
 
-        $dayOfWeek = $this->faker->randomElement(['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']);
+        $dayOfWeek = $this->faker->randomElement(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']);
         $clubHour = $club->hours->where('day_of_week', $dayOfWeek)->first();
 
         $openingTime = Carbon::parse($clubHour->opening_time);
