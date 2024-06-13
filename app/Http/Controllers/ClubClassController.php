@@ -36,19 +36,19 @@ class ClubClassController extends Controller
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
-        // $startDateTime = Carbon::parse($request->start_time);
-        // $endDateTime = Carbon::parse($request->end_time);
-        // $dayOfWeek = $startDateTime->format('l');
+        $startDateTime = Carbon::parse($request->start_time);
+        $endDateTime = Carbon::parse($request->end_time);
+        $dayOfWeek = $startDateTime->format('l');
 
-        // $clubHour = $club->hours()->where('day_of_week', $dayOfWeek)->first();
+        $clubHour = $club->hours()->where('day_of_week', $dayOfWeek)->first();
 
-        // if (!$clubHour) {
-        //     return redirect()->route('clubs.index')->with('error', 'No se encontró el horario para el día seleccionado.');
-        // }
+        if (!$clubHour) {
+            return redirect()->route('clubs.index')->with('error', 'No se encontró el horario para el día seleccionado.');
+        }
 
-        // if ($startDateTime->lt(Carbon::parse($clubHour->opening_time)) || $endDateTime->gt(Carbon::parse($clubHour->closing_time))) {
-        //     return redirect()->route('clubs.index')->with('error', "La clase debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
-        // }
+        if ($startDateTime->lt(Carbon::parse($clubHour->opening_time)) || $endDateTime->gt(Carbon::parse($clubHour->closing_time))) {
+            return redirect()->route('clubs.index')->with('error', "La clase debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
+        }
 
         try {
             ClubClass::create([

@@ -17,11 +17,11 @@ class CourtRental extends Model
     ];
 
     /**
-     * Relación con la tabla classes
+     * Relación con la tabla Courts
      */
     public function court()
     {
-        return $this->belongsTo(ClubClass::class);
+        return $this->belongsTo(Court::class);
     }
 
       /**

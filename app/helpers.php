@@ -21,12 +21,12 @@ if (!defined('HELPERS_LOADED')) {
         $courtRentalConflict = CourtRental::where('court_id', $courtId)
             ->where(function ($query) use ($startTime, $endTime) {
                 $query->where(function ($q) use ($startTime, $endTime) {
-                    $q->where('start_time', '<=', $endTime)
-                        ->where('end_time', '>=', $startTime);
+                    $q->where('start_time', '<', $endTime)
+                        ->where('end_time', '>', $startTime);
                 })
                     ->orWhere(function ($q) use ($startTime, $endTime) {
-                        $q->where('start_time', '<=', $startTime)
-                            ->where('end_time', '>=', $endTime);
+                        $q->where('start_time', '<', $startTime)
+                            ->where('end_time', '>', $endTime);
                     });
             })
             ->exists();
@@ -35,12 +35,12 @@ if (!defined('HELPERS_LOADED')) {
         $clubClassConflict = ClubClass::where('court_id', $courtId)
             ->where(function ($query) use ($startTime, $endTime) {
                 $query->where(function ($q) use ($startTime, $endTime) {
-                    $q->where('start_time', '<=', $endTime)
-                        ->where('end_time', '>=', $startTime);
+                    $q->where('start_time', '<', $endTime)
+                        ->where('end_time', '>', $startTime);
                 })
                     ->orWhere(function ($q) use ($startTime, $endTime) {
-                        $q->where('start_time', '<=', $startTime)
-                            ->where('end_time', '>=', $endTime);
+                        $q->where('start_time', '<', $startTime)
+                            ->where('end_time', '>', $endTime);
                     });
             })
             ->exists();

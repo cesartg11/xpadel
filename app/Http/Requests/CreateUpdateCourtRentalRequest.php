@@ -22,8 +22,8 @@ class CreateUpdateCourtRentalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_time' => 'required|date_format:"d-m-Y H:i"',
-            'end_time' => 'required|date_format:"d-m-Y H:i"|after:start_time',
+            'start_time' => 'required|date_format:"Y-m-d H:i"',
+            'end_time' => 'required|date_format:"Y-m-d H:i"|after:start_time',
         ];
     }
 

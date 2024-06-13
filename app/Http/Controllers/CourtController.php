@@ -11,7 +11,7 @@ use App\Http\Requests\CreateUpdateCourtRequest;
 use App\Models\CourtRental;
 use App\Models\UserProfile;
 use Carbon\Carbon;
-use function App\Helpers\isAvailable;
+use function App\isAvailable;
 
 class CourtController extends Controller
 {
@@ -23,19 +23,16 @@ class CourtController extends Controller
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
-            dd("NO AUTH");
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
         if (!$user->hasRole('club')) {
-            dd("NO CLUB");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
         $club = ClubProfile::findOrFail($clubId);
 
         if ($user->clubProfile->id !== $club->id) {
-            dd("NO MISMO CLUB");
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
@@ -56,18 +53,20 @@ class CourtController extends Controller
     /**
      * Crea un nuevo alquiler en una pista de un club determinado
      */
-    public function createRent(CreateUpdateCourtRentalRequest $request, ClubProfile $club, Court $court)
+    public function createRent(CreateUpdateCourtRentalRequest $request, $clubId, $courtId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->userProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
+        $club = ClubProfile::findOrFail($clubId);
+
         if (!$user->hasRole('user')) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
-        $alreadyRegistered = CourtRental::where('court_id', $court->id)
+        $alreadyRegistered = CourtRental::where('court_id', $courtId)
             ->where('user_profile_id', $user->userProfile->id)
             ->where('start_time', $request->start_time)
             ->where('end_time', $request->end_time)
@@ -79,7 +78,19 @@ class CourtController extends Controller
 
         $startDateTime = Carbon::parse($request->start_time);
         $endDateTime = Carbon::parse($request->end_time);
-        $dayOfWeek = $startDateTime->format('l');
+        $day = $startDateTime->format('l');
+
+        $days = [
+            'Monday' => 'Lunes',
+            'Tuesday' => 'Martes',
+            'Wednesday' => 'Miércoles',
+            'Thursday' => 'Jueves',
+            'Friday' => 'Viernes',
+            'Saturday' => 'Sábado',
+            'Sunday' => 'Domingo',
+        ];
+
+        $dayOfWeek = $days[$day];
 
         $clubHour = $club->hours()->where('day_of_week', $dayOfWeek)->first();
 
@@ -91,7 +102,7 @@ class CourtController extends Controller
             return redirect()->route('clubs.show', compact('club'))->with('error', "El alquiler de la pista debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
         }
 
-        if (!isAvailable($court->id, $request->start_time, $request->end_time)) {
+        if (!isAvailable($courtId, $request->start_time, $request->end_time)) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'La pista no está disponible en este horario.');
         }
 
@@ -101,14 +112,14 @@ class CourtController extends Controller
 
             CourtRental::create([
                 'user_profile_id' => $user->userProfile->id,
-                'court_id' => $court->id,
+                'court_id' => $courtId,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
             ]);
 
             DB::commit();
 
-            return redirect()->route('clubs.show', compact('club'))->with('success', 'Pista alquilada con éxito');
+            return redirect()->back()->with('success', 'Pista alquilada con éxito');
         } catch (Exception $e) {
             DB::rollback();
             return redirect()->route('clubs.show',  compact('club'))->with('error', 'No se pudo alquilar la pista. ' . $e->getMessage());
