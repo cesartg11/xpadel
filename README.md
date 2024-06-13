@@ -11,25 +11,24 @@ X-Padel es una aplicación web diseñada para mejorar la gestión de clubes de p
 
 ## Tecnologías utilizadas
 
-- Frontend: HTML, CSS, JavaScript (Framework: [Nombre del framework])
-- Backend: [Nombre del lenguaje o framework utilizado]
-- Base de datos: [Nombre del sistema de gestión de bases de datos]
+- Frontend: HTML, CSS, JavaScript.
+- Backend: PHP con Laravel Framework
+- Base de datos: Mysql
 
 ## Instalación
 
-1. Clona este repositorio: `git clone https://github.com/tu-usuario/x-padel.git`
-2. Instala las dependencias: `npm install`
-3. Inicia el servidor: `npm start`
-
-## Contribuciones
-
-Las contribuciones son bienvenidas. Si quieres colaborar en el desarrollo de X-Padel, por favor sigue estos pasos:
-1. Haz un fork del repositorio
-2. Crea una nueva rama (`git checkout -b feature/nueva-caracteristica`)
-3. Realiza tus cambios y haz commit (`git commit -am 'Añade una nueva característica'`)
-4. Sube tus cambios (`git push origin feature/nueva-caracteristica`)
-5. Abre un pull request
-
-## Licencia
-
-Este proyecto está bajo la [Licencia MIT](LICENSE).
+1. Clona este repositorio.
+2. Accede al directorio del proyecto: cd x-padel
+3. Instala las dependencias de Composer: composer install
+4. Copia el archivo de configuración de ejemplo y configura tu entorno: cp .env.example .env
+5. Genera una nueva clave de aplicación: php artisan key:generate
+6. Configura tu base de datos en el archivo .env. Por ejemplo:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nombre_de_tu_base_de_datos
+    DB_USERNAME=usuario_de_tu_base_de_datos
+    DB_PASSWORD=contraseña_de_tu_base_de_datos
+7. Ejecuta las migraciones y los seeders para crear la estructura de la base de datos y poblarla con datos de prueba (opcional): php artisan migrate --seed
+8. Inicia el servidor de desarrollo: php artisan serve
+9. Una vez completados estos pasos, podrás acceder a X-Padel en tu navegador visitando http://localhost:8000.
