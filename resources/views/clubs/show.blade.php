@@ -103,7 +103,9 @@
                                 @for ($hour = $openingHour; $hour <= $closingHour; $hour++)
                                     @php
                                         // Ajusta la hora actual al inicio de la hora específica
-                                        $currentHour = \Carbon\Carbon::now()->setTime((int) $hour, 0, 0)->format('Y-m-d H:i:s');
+                                        $currentHour = \Carbon\Carbon::now()
+                                            ->setTime((int) $hour, 0, 0)
+                                            ->format('Y-m-d H:i:s');
                                         $slotStatus = $pistas[$court->id][$currentHour] ?? 'available'; // Defaults to available
                                     @endphp
                                     <div id="slot-{{ $court->id }}-{{ $court->number }}-{{ $hour }}-{{ $club->id }}"

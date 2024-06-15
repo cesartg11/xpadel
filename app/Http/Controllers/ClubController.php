@@ -83,9 +83,9 @@ class ClubController extends Controller
 
             Auth::login($user);
 
-            if(auth()->user()){
+            if (auth()->user()) {
                 return redirect()->route('clubs.show', ['club' => $club]);
-            }else{
+            } else {
                 DB::rollback();
                 return redirect()->route('register')->with('error', 'No se pudo crear el club.');
             }
@@ -101,37 +101,49 @@ class ClubController extends Controller
      * Display the specified resource.
      */
     public function show(ClubProfile $club)
-    {
-        $todayName = Carbon::now()->locale('es')->isoFormat('dddd'); // 'lunes', 'martes', etc.
-        $todayHours = $club->hours()->where('day_of_week', $todayName)->first();
-        $pistas = [];
-        $userId = auth()->id(); // Asume que el usuario está autenticado
+{
+    $todayName = Carbon::now()->locale('es')->isoFormat('dddd');
+    $todayHours = $club->hours()->where('day_of_week', $todayName)->first();
+    $pistas = [];
+    $userId = null;
 
-        if ($todayHours) {
-            $openingHour = Carbon::parse($todayHours->opening_time);
-            $closingHour = Carbon::parse($todayHours->closing_time);
+    // Solo recupera el ID del usuario si está autenticado
+    if (auth()->check() && auth()->user()->hasRole('user')) {
+        $userId = auth()->user()->userProfile->id;
+    }
 
-            while ($openingHour->lessThan($closingHour)) {
-                $endTime = (clone $openingHour)->addHour();
+    if ($todayHours) {
+        $openingHour = Carbon::parse($todayHours->opening_time);
+        $closingHour = Carbon::parse($todayHours->closing_time);
 
-                foreach ($club->courts as $court) {
-                    $startFormatted = $openingHour->format('Y-m-d H:i:s');
-                    $endFormatted = $endTime->format('Y-m-d H:i:s');
+        while ($openingHour->lessThan($closingHour)) {
+            $endTime = (clone $openingHour)->addHour();
 
-                    $available = isAvailable($court->id, $startFormatted, $endFormatted);
+            foreach ($club->courts as $court) {
+                $startFormatted = $openingHour->format('Y-m-d H:i:s');
+                $endFormatted = $endTime->format('Y-m-d H:i:s');
+
+                $available = isAvailable($court->id, $startFormatted, $endFormatted);
+                $userRental = false;
+
+                if ($userId) {
                     $userRental = $court->rental()->where('start_time', $startFormatted)
-                                        ->where('end_time', $endFormatted)
-                                        ->where('user_profile_id', $userId)
-                                        ->exists();
-                    $pistas[$court->id][$startFormatted] = $userRental ? 'user' : ($available ? 'available' : 'occupied');
+                        ->where('end_time', $endFormatted)
+                        ->where('court_id', $court->id)
+                        ->where('user_profile_id', $userId)
+                        ->exists();
                 }
 
-                $openingHour->addHour();
+                $pistas[$court->id][$startFormatted] = $userRental ? 'user' : ($available ? 'available' : 'occupied');
             }
-        }
 
-        return view('clubs.show', compact('club', 'pistas'));
+            $openingHour->addHour();
+        }
     }
+
+    return view('clubs.show', compact('club', 'pistas'));
+}
+
 
     /**
      * Show the form for editing the specified resource.

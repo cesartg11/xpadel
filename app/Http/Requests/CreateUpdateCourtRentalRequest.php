@@ -36,9 +36,9 @@ class CreateUpdateCourtRentalRequest extends FormRequest
     {
         return [
             'start_time.required' => 'La hora de inicio es obligatoria.',
-            'start_time.date_format' => 'La hora de inicio no cumple con el formato requerido (día-mes-año horas:minutos).',
+            'start_time.date_format' => 'La hora de inicio no cumple con el formato requerido (año-mes-dia horas:minutos).',
             'end_time.required' => 'La hora de fin es obligatoria.',
-            'end_time.date_format' => 'La hora de fin no cumple con el formato requerido (día-mes-año horas:minutos).',
+            'end_time.date_format' => 'La hora de fin no cumple con el formato requerido (año-mes-dia horas:minutos).',
             'end_time.after' => 'La hora de fin debe ser posterior a la hora de inicio.',
         ];
     }

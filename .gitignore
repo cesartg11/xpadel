@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+public/assets/clubs/club_photos
+public/assets/tournaments/tournament_photos
+public/assets/users/

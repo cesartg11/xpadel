@@ -94,11 +94,17 @@ class CourtController extends Controller
 
         $clubHour = $club->hours()->where('day_of_week', $dayOfWeek)->first();
 
+        $startDateTime = Carbon::parse($request->start_time, 'Europe/Madrid'); // Asegúrate de usar la zona horaria correcta
+        $endDateTime = Carbon::parse($request->end_time, 'Europe/Madrid');
+        $openingTime = Carbon::parse($clubHour->opening_time, 'Europe/Madrid');
+        $closingTime = Carbon::parse($clubHour->closing_time, 'Europe/Madrid');
+
+
         if (!$clubHour) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'No se encontró el horario para el día seleccionado.');
         }
 
-        if ($startDateTime->lt(Carbon::parse($clubHour->opening_time)) || $endDateTime->gt(Carbon::parse($clubHour->closing_time))) {
+        if ($startDateTime->lt($openingTime) || $endDateTime->gt($closingTime)) {
             return redirect()->route('clubs.show', compact('club'))->with('error', "El alquiler de la pista debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
         }
 
@@ -122,7 +128,7 @@ class CourtController extends Controller
             return redirect()->back()->with('success', 'Pista alquilada con éxito');
         } catch (Exception $e) {
             DB::rollback();
-            return redirect()->route('clubs.show',  compact('club'))->with('error', 'No se pudo alquilar la pista. ' . $e->getMessage());
+            return redirect()->route('clubs.show', compact('club'))->with('error', 'No se pudo alquilar la pista. ' . $e->getMessage());
         }
     }
 

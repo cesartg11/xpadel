@@ -16,7 +16,7 @@
     <main class="mb-10 bg-gray-100">
 
         @if ($errors->any())
-            <div class="bg-red-500 text-white p-4 rounded-md shadow mt-28 absolute right-0 z-50">
+            <div class="bg-red-500 text-white p-4 rounded-md shadow mt-28 absolute right-0 z-20">
                 Hubo los siguientes errores de validación:
                 <ul class="text-sm">
                     @foreach ($errors->all() as $error)
@@ -27,13 +27,13 @@
         @endif
 
         @if (session('success'))
-        <div class="bg-blue-500 text-white p-4 rounded-md shadow mt-28 absolute right-0 z-50">
+        <div class="bg-blue-500 text-white p-4 rounded-md shadow mt-28 absolute right-0 z-20">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-        <div class="bg-red-500 text-white p-4 rounded-md shadow mt-28 absolute right-0 z-50">
+        <div class="bg-red-500 text-white p-4 rounded-md shadow mt-28 absolute right-0 z-20">
                 {{ session('error') }}
             </div>
         @endif

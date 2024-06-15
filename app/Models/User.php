@@ -89,7 +89,7 @@ class User extends Authenticatable
     /**
      * Relación con la tabla Message
      */
-    public function Messages()
+    public function messages()
     {
         return $this->hasMany(Message::class);
     }
