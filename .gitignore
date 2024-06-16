@@ -19,4 +19,4 @@ yarn-error.log
 /.vscode
 public/assets/clubs/club_photos
 public/assets/tournaments/tournament_photos
-public/assets/users/
+public/assets/users/users_profile_photo
