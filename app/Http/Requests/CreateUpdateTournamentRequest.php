@@ -22,7 +22,7 @@ class CreateUpdateTournamentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:tournaments',
+            'name' => 'required|string|max:255',
             'status' => 'required|string|in:Abierto,Cerrado,En progreso',
             'description' => 'required|string|max:5000',
             'photo_url' => 'nullable|file|mimes:jpeg,jpg,png',

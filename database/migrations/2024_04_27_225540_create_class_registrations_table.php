@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('class_registrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_profile_id')->constrained('user_profile');
-            $table->foreignId('class_id')->constrained('classes');
+            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
             $table->timestamps();
         });
     }

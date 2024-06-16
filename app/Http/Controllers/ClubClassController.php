@@ -55,8 +55,8 @@ class ClubClassController extends Controller
                 'club_profile_id' => $user->clubProfile->id,
                 'court_id' => $request->court_id,
                 'level' => $request->level,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
+                'start_time' => $startDateTime,
+                'end_time' => $endDateTime,
             ]);
 
             return redirect()->back()->with('success', 'Clase creada con éxito.');
@@ -100,7 +100,7 @@ class ClubClassController extends Controller
 
             DB::commit();
 
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Te has apuntado a la clase con éxito');
         } catch (Exception $e) {
             DB::rollback();
             return redirect()->route('clubs.show', compact('club'))->with('error', 'Error al hacer el registro en la clase: ' . $e->getMessage());
@@ -110,16 +110,18 @@ class ClubClassController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateUpdateClassRequest $request, ClubProfile $club, ClubClass $class)
+    public function update(CreateUpdateClassRequest $request, $clubId, $classId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
+
+        $club = ClubProfile::findOrFail($clubId);
 
         if ($user->clubProfile->id !== $club->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
@@ -141,43 +143,50 @@ class ClubClassController extends Controller
             return redirect()->route('classes.index')->with('error', "La clase debe estar dentro del horario de apertura del club ($clubHour->opening_time a $clubHour->closing_time).");
         }
 
+        $class = ClubClass::findOrFail($classId);
+
         try {
             $class->update([
+                'club_profile_id' => $user->clubProfile->id,
+                'court_id' => $request->court_id,
                 'level' => $request->level,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
+                'start_time' => $startDateTime,
+                'end_time' => $endDateTime,
             ]);
 
-            return redirect()->route('classes.index')->with('success', 'Clase actualizada con éxito.');
+            return redirect()->back()->with('success', 'Clase actualizada con éxito.');
         } catch (Exception $e) {
-            return redirect()->route('classes.index')->with('error', 'Error al actualizar la clase: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar la clase: ' . $e->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ClubProfile $club, ClubClass $class)
+    public function destroy($clubId, $classId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
+
+        $club = ClubProfile::findOrFail($clubId);
 
         if ($user->clubProfile->id !== $club->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
         try {
-            $class->registrations()->delete(); //Borramos los registros
+            $class = ClubClass::findOrFail($classId);
+            $class->registrations()->delete(); //Borramos los registros de cada clase
             $class->delete(); //Borramos la clase
-            return redirect()->route('classes.index')->with('success', 'Clase eliminada con éxito.');
+            return redirect()->back()->with('success', 'Clase eliminada con éxito.');
         } catch (Exception $e) {
-            return redirect()->route('classes.index')->with('error', 'Error al eliminar la clase: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar la clase: ' . $e->getMessage());
         }
     }
 

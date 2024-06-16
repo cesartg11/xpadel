@@ -37,6 +37,6 @@ class ClubClass extends Model
      */
     public function registrations()
     {
-        return $this->hasMany(ClubClassRegistration::class);
+        return $this->hasMany(ClubClassRegistration::class, 'class_id');
     }
 }

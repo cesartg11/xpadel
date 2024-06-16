@@ -26,8 +26,8 @@ class CreateUpdateClassRequest extends FormRequest
         return [
             'court_id' => 'required|exists:courts,id',
             'level' => 'required|in:Pro,Principiante,Medio',
-            'start_time' => 'required|date_format:"Y-m-d\TH:i"',
-            'end_time' => 'required|date_format:"Y-m-d\TH:i"|after:start_time'
+            'start_time' => 'required|date_format:"Y-m-d H:i"',
+            'end_time' => 'required|date_format:"Y-m-d H:i"|after:start_time'
         ];
     }
 
@@ -47,10 +47,10 @@ class CreateUpdateClassRequest extends FormRequest
             'level.max' => 'El nivel no puede tener más de 255 caracteres.',
 
             'start_time.required' => 'La hora de inicio es obligatoria.',
-            'start_time.date_format' => 'La hora de inicio no tiene un formato válido. Use el formato dd-mm-aaaa hh:mm.',
+            'start_time.date_format' => 'La hora de inicio no tiene un formato válido. Use el formato aaaa-mm-dd hh:mm.',
 
             'end_time.required' => 'La hora de finalización es obligatoria.',
-            'end_time.date_format' => 'La hora de finalización no tiene un formato válido. Use el formato dd-mm-aaaa hh:mm.',
+            'end_time.date_format' => 'La hora de finalización no tiene un formato válido. Use el formato aaaa-mm-dd hh:mm.',
             'end_time.after' => 'La hora de finalización debe ser posterior a la hora de inicio.'
         ];
     }

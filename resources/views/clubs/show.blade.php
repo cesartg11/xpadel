@@ -1,5 +1,5 @@
 @extends('layouts.plantilla')
-@section('titulo', 'Clubs')
+@section('titulo', $club->name)
 @section('contenido')
     <div class="w-full mt-24">
 
@@ -17,9 +17,14 @@
                 @role('club')
                     @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
                         <div class="mr-20">
-                            <button id="openModalButton" class="h-10 bg-lime-300 hover:bg-lime-400 text-black py-2 px-4 rounded"
+                            <button id="openModalButton" class="flex flex-row items-center justify-center gap-2 h-10 bg-lime-300 hover:bg-lime-400 text-black py-2 px-4 rounded"
                                 data-club="{{ $club->id }}">
                                 Editar foto
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
                             </button>
                         </div>
                     @endif
@@ -35,9 +40,15 @@
                     @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
                         <div class="mr-20">
                             <button id="openModalButton"
-                                class="h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                class="flex flex-row items-center justify-center gap-2 h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 data-club="{{ $club->id }}">
                                 Editar foto
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
+
                             </button>
                         </div>
                     @endif
@@ -53,9 +64,15 @@
                     <h2 class="text-xl font-semibold">Pistas</h2>
                     @role('club')
                         @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
-                            <button id="createCourtButton" class="px-4 py-2  text-black rounded bg-lime-300 hover:bg-lime-400"
+                            <button id="createCourtButton"
+                                class="flex flex-row items-center justify-center gap-2 px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400"
                                 data-club="{{ $club->id }}">
                                 Crear pista
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
                             </button>
                         @endif
                     @endrole
@@ -146,9 +163,14 @@
                     <h2 class="text-xl font-semibold mb-4">Clases</h2>
                     @role('club')
                         @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
-                            <button id="createClassButton" class="px-4 py-2  text-black rounded bg-lime-300 hover:bg-lime-400"
+                            <button id="createClassButton" class="flex flex-row items-center justify-center gap-2 px-4 py-2  text-black rounded bg-lime-300 hover:bg-lime-400"
                                 data-club="{{ $club->id }}" data-club-courts="{{ json_encode($club->courts) }}">
                                 Crear clase
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
                             </button>
                         @endif
                     @endrole
@@ -172,16 +194,45 @@
                             <div class="flex-1">{{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }} a
                                 {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}</div>
                             <div class="flex-1">
-                                <button
-                                    class="openclassRegisterButton px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400"
-                                    data-class='{{ $class->id }}' data-class-level='{{ $class->level }}'
-                                    data-class-court='{{ $class->court->number }}'
-                                    data-class-date='{{ \Carbon\Carbon::parse($class->start_time)->format('d/m/Y') }}'
-                                    data-class-start='{{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}'
-                                    data-class-end='{{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}'
-                                    data-club='{{ $club->id }}'>
-                                    Apuntarse
-                                </button>
+                                @if (auth()->check() && auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
+                                    <button class="classEditButton rounded-full p-2 hover:bg-lime-300"
+                                        data-class-id='{{ $class->id }}'
+                                        data-club-courts="{{ json_encode($club->courts) }}"
+                                        data-class-court="{{ $class->court->id }}" data-class-level='{{ $class->level }}'
+                                        data-class-start='{{ $class->start_time }}'
+                                        data-class-end='{{ $class->end_time }}' data-club='{{ $club->id }}'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                        </svg>
+                                    </button>
+                                    <button class="classDeleteButton rounded-full p-2 hover:bg-red-500"
+                                        data-class-id='{{ $class->id }}' data-club='{{ $club->id }}'
+                                        data-class-level='{{ $class->level }}'
+                                        data-class-court='{{ $class->court->number }}'
+                                        data-class-date='{{ \Carbon\Carbon::parse($class->start_time)->format('d/m/Y') }}'
+                                        data-class-start='{{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}'
+                                        data-class-end='{{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                @else
+                                    <button
+                                        class="openclassRegisterButton px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400"
+                                        data-class='{{ $class->id }}' data-class-level='{{ $class->level }}'
+                                        data-class-court='{{ $class->court->number }}'
+                                        data-class-date='{{ \Carbon\Carbon::parse($class->start_time)->format('d/m/Y') }}'
+                                        data-class-start='{{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}'
+                                        data-class-end='{{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}'
+                                        data-club='{{ $club->id }}'>
+                                        Apuntarse
+                                    </button>
+                                @endif
+
                             </div>
                         </div>
                     @empty
@@ -197,9 +248,14 @@
                     @role('club')
                         @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
                             <button id="createTournamentButton"
-                                class="px-4 py-2  text-black rounded bg-lime-300 hover:bg-lime-400"
+                                class="flex flex-row items-center justify-center gap-2 px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400"
                                 data-club="{{ $club->id }}">
                                 Crear Torneo
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
                             </button>
                         @endif
                     @endrole
@@ -219,13 +275,44 @@
                         <div class="flex justify-between items-center border p-4 p-lg text-center">
                             <div class="flex-1">{{ $tournament->name }}</div>
                             <div class="flex-1">{{ $tournament->status }}</div>
-                            <div class="flex-1">{{ \Carbon\Carbon::parse($tournament->start_time)->format('d/m/Y') }}</div>
-                            <div class="flex-1">{{ \Carbon\Carbon::parse($tournament->end_time)->format('d/m/Y') }}</div>
+                            <div class="flex-1">{{ \Carbon\Carbon::parse($tournament->start_date)->format('d/m/Y') }}
+                            </div>
+                            <div class="flex-1">{{ \Carbon\Carbon::parse($tournament->end_date)->format('d/m/Y') }}</div>
                             <div class="flex-1">
-                                <a href="{{ route('clubs.index') }}"
-                                    class="inline-block px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400 text-center">
-                                    Ver
-                                </a>
+                                @if (auth()->check() && auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
+                                    <button class="tournamentEditButton rounded-full p-2 hover:bg-lime-300"
+                                        data-tournament-id='{{ $tournament->id }}'
+                                        data-tournament-name="{{ $tournament->name }}"
+                                        data-tournament-status="{{ $tournament->status }}"
+                                        data-tournament-photo="{{ $tournament->photo_url }}"
+                                        data-tournament-description="{{ $tournament->description }}"
+                                        data-tournament-start='{{ \Carbon\Carbon::parse($tournament->start_date)->format('Y/m/d') }}'
+                                        data-tournament-end='{{ \Carbon\Carbon::parse($tournament->end_date)->format('Y/m/d') }}'
+                                        data-club='{{ $club->id }}'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                        </svg>
+                                    </button>
+                                    <button class="tournamentDeleteButton rounded-full p-2 hover:bg-red-500"
+                                        data-tournament-id='{{ $tournament->id }}'
+                                        data-tournament-name="{{ $tournament->name }}"
+                                        data-tournament-start='{{ \Carbon\Carbon::parse($tournament->start_date)->format('Y/m/d') }}'
+                                        data-tournament-end='{{ \Carbon\Carbon::parse($tournament->end_date)->format('Y/m/d') }}'
+                                        data-club='{{ $club->id }}'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                @else
+                                    <a href="{{ route('clubs.index') }}"
+                                        class="inline-block px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400 text-center">
+                                        Ver
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     @empty
@@ -252,9 +339,14 @@
                         @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
                             <div class="flex justify-center mt-10">
                                 <button id="openModalInfoButton"
-                                    class="h-9 bg-lime-300 hover:bg-lime-400 py-2 px-4 rounded text-black"
+                                    class="flex flex-row items-center justify-center gap-2 h-9 bg-lime-300 hover:bg-lime-400 py-2 px-4 rounded text-black"
                                     data-club="{{ $club->id }}">
                                     Editar información
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
                                 </button>
                             </div>
                         @endif
@@ -278,7 +370,7 @@
                                 <div id="contenedorDatos" class="flex flex-col justify-center items-center gap-2">
                                 </div>
                                 <div>
-                                    <form id="form" action="#" method="post" enctype="multipart/form-data">
+                                    <form id="form" action="#" method="#">
                                         @csrf
 
                                         <div id="divButtons"
@@ -367,6 +459,10 @@
 
                 var clubId = this.getAttribute('data-club');
                 var formAction = `/clubs/${clubId}/cabecera`;
+
+                form.method = "POST";
+
+                form.setAttribute('enctype', 'multipart/form-data');
 
                 form.action = formAction;
 
@@ -461,6 +557,8 @@
                     divCourt.classList.add('text-md');
                     contenedorDatos.appendChild(divCourt);
 
+                    form.method = "POST"
+
                     var formAction = `/courts/${clubId}/courts/${courtId}/rent`;
 
                     form.action = formAction;
@@ -495,7 +593,7 @@
                 numberInput.id = 'number';
                 numberInput.placeholder = 'Número de pista';
                 numberInput.className =
-                    'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md';
+                    'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir select para tipo de pista
                 var typeLabel = document.createElement('label');
@@ -507,7 +605,7 @@
                 select.name = 'type';
                 select.id = 'type';
                 select.className =
-                    'mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 var option1 = document.createElement('option');
                 option1.value = 'Muro';
@@ -537,20 +635,20 @@
 
                 var clubId = this.getAttribute('data-club');
                 var formAction = `/courts/${clubId}/store`;
+
+                form.method = "POST"
+
                 form.action = formAction;
 
                 modal.classList.remove('hidden');
             });
         }
 
-
         var createClassButton = document.getElementById('createClassButton');
         if (createClassButton) {
             /**
              * Modal de creación de clase
              */
-            var createClassButton = document.getElementById(
-                'createClassButton'); // Asegúrate que este es el ID correcto del botón
             createClassButton.addEventListener('click', function() {
                 cleanForm(); // Suponiendo que esta función limpia adecuadamente el formulario
 
@@ -578,14 +676,13 @@
                 courtSelect.name = 'court_id';
                 courtSelect.id = 'court';
                 courtSelect.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
                 courts.forEach(function(court) {
                     var option = document.createElement('option');
                     option.value = court.id;
                     option.textContent = 'Pista ' + court.number;
                     courtSelect.appendChild(option);
                 });
-
 
                 // Crear y añadir select para el nivel
                 var levelLabel = document.createElement('label');
@@ -597,7 +694,7 @@
                 levelSelect.name = 'level';
                 levelSelect.id = 'level';
                 levelSelect.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
                 ['Pro', 'Medio', 'Principiante'].forEach(function(level) {
                     var option = document.createElement('option');
                     option.value = level;
@@ -605,33 +702,29 @@
                     levelSelect.appendChild(option);
                 });
 
-
                 // Crear y añadir input para la fecha
                 var dateLabel = document.createElement('label');
                 dateLabel.textContent = 'Fecha';
                 dateLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
-
 
                 var dateInput = document.createElement('input');
                 dateInput.type = 'date';
                 dateInput.name = 'date';
                 dateInput.id = 'date';
                 dateInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
-
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir input para la hora de inicio
                 var startTimeLabel = document.createElement('label');
                 startTimeLabel.textContent = 'Hora de inicio';
                 startTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
 
-
                 var startTimeInput = document.createElement('input');
                 startTimeInput.type = 'time';
                 startTimeInput.name = 'start';
                 startTimeInput.id = 'start';
                 startTimeInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir input para la hora de fin
                 var endTimeLabel = document.createElement('label');
@@ -643,7 +736,7 @@
                 endTimeInput.name = 'end';
                 endTimeInput.id = 'end';
                 endTimeInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir input hidden para la hora de inicio formateada
                 var startTFormatimeInput = document.createElement('input');
@@ -680,8 +773,8 @@
                     var startTime = document.getElementById('start').value;
                     var endTime = document.getElementById('end').value;
 
-                    document.getElementById('formatted_start_time').value = date + 'T' + startTime;
-                    document.getElementById('formatted_end_time').value = date + 'T' + endTime;
+                    document.getElementById('formatted_start_time').value = date + ' ' + startTime;
+                    document.getElementById('formatted_end_time').value = date + ' ' + endTime;
 
                     form.submit(); // Envía el formulario después de la configuración
                 };
@@ -689,17 +782,272 @@
                 // Configurar acción del formulario y mostrar el modal
                 var clubId = this.getAttribute('data-club');
                 var formAction = `/club-profile/${clubId}/classes`;
+
+                form.method = "POST"
+
                 form.action = formAction;
                 modal.classList.remove('hidden');
             });
         }
 
+        /**
+         * Modal de modificación de clase
+         */
+        var classEditButton = document.querySelectorAll('.classEditButton');
+        classEditButton.forEach(button => {
+            button.addEventListener('click', function() {
+                cleanForm();
+                contenedorDatos.classList.add('mt-4');
+                modaltitle.textContent = 'Editar clase';
 
+                let csrfInput = form.querySelector('input[name="_token"]');
+                if (!csrfInput) {
+                    csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content');
+                    form.appendChild(csrfInput);
+                }
+
+                let methodInput = form.querySelector('input[name="_method"]');
+                if (!methodInput) {
+                    methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'PUT';
+                    form.appendChild(methodInput);
+                }
+
+                var courts = JSON.parse(this.getAttribute('data-club-courts'));
+                var currentCourtId = this.getAttribute('data-class-court');
+                var currentLevel = this.getAttribute('data-class-level');
+                var currentDate = this.getAttribute('data-class-start').split(' ')[0];
+                var currentStartTime = this.getAttribute('data-class-start').split(' ')[1];
+                var currentEndTime = this.getAttribute('data-class-end').split(' ')[1];
+
+                // Setup court select
+                var courtLabel = document.createElement('label');
+                courtLabel.textContent = 'Pista';
+                courtLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                var courtSelect = document.createElement('select');
+                courtSelect.name = 'court_id';
+                courtSelect.id = 'courtEdit';
+                courtSelect.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                courts.forEach(function(court) {
+                    var option = document.createElement('option');
+                    option.value = court.id;
+                    option.textContent = 'Pista ' + court.number;
+                    if (court.id == currentCourtId) option.selected = true;
+                    courtSelect.appendChild(option);
+                });
+
+                // Setup level select
+                var levelLabel = document.createElement('label');
+                levelLabel.textContent = 'Nivel';
+                levelLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                var levelSelect = document.createElement('select');
+                levelSelect.name = 'level';
+                levelSelect.id = 'levelEdit';
+                levelSelect.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                ['Pro', 'Medio', 'Principiante'].forEach(function(level) {
+                    var option = document.createElement('option');
+                    option.value = level;
+                    option.textContent = level;
+                    if (level === currentLevel) option.selected = true;
+                    levelSelect.appendChild(option);
+                });
+
+                // Setup date input
+                var dateLabel = document.createElement('label');
+                dateLabel.textContent = 'Fecha';
+                dateLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                var dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.name = 'date';
+                dateInput.id = 'dateEdit';
+                dateInput.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                dateInput.value = currentDate;
+
+                // Setup start time input
+                var startTimeLabel = document.createElement('label');
+                startTimeLabel.textContent = 'Hora de inicio';
+                startTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                var startTimeInput = document.createElement('input');
+                startTimeInput.type = 'time';
+                startTimeInput.name = 'start';
+                startTimeInput.id = 'startEdit';
+                startTimeInput.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                startTimeInput.value = currentStartTime;
+
+                // Setup end time input
+                var endTimeLabel = document.createElement('label');
+                endTimeLabel.textContent = 'Hora de fin';
+                endTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                var endTimeInput = document.createElement('input');
+                endTimeInput.type = 'time';
+                endTimeInput.name = 'end';
+                endTimeInput.id = 'endEdit';
+                endTimeInput.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                endTimeInput.value = currentEndTime;
+
+                // Crear y añadir input hidden para la hora de inicio formateada
+                var startTFormatimeInput = document.createElement('input');
+                startTFormatimeInput.type = 'hidden';
+                startTFormatimeInput.name = 'start_time';
+                startTFormatimeInput.id = 'formatted_start_time';
+
+                // Crear y añadir input hidden para la hora de fin formateada
+                var endFormatTimeInput = document.createElement('input');
+                endFormatTimeInput.type = 'hidden';
+                endFormatTimeInput.name = 'end_time';
+                endFormatTimeInput.id = 'formatted_end_time';
+
+                form.insertBefore(startTFormatimeInput, buttonContainer);
+                form.insertBefore(endFormatTimeInput, buttonContainer);
+                form.insertBefore(courtLabel, buttonContainer);
+                form.insertBefore(courtSelect, buttonContainer);
+                form.insertBefore(levelLabel, buttonContainer);
+                form.insertBefore(levelSelect, buttonContainer);
+                form.insertBefore(dateLabel, buttonContainer);
+                form.insertBefore(dateInput, buttonContainer);
+                form.insertBefore(startTimeLabel, buttonContainer);
+                form.insertBefore(startTimeInput, buttonContainer);
+                form.insertBefore(endTimeLabel, buttonContainer);
+                form.insertBefore(endTimeInput, buttonContainer);
+
+                form.onsubmit = function(event) {
+                    event.preventDefault(); // Evitar el envío automático
+                    var date = document.getElementById('dateEdit').value;
+                    var startTime = document.getElementById('startEdit').value.split(':');
+                    var realStartTime = startTime[0] + ":" + startTime[1];
+                    var endTime = document.getElementById('endEdit').value.split(':');
+                    var realEndTime = endTime[0] + ":" + endTime[1];
+
+                    document.getElementById('formatted_start_time').value = date + ' ' +
+                        realStartTime;
+                    document.getElementById('formatted_end_time').value = date + ' ' +
+                        realEndTime;
+
+                    form.submit();
+                };
+
+                var classId = this.getAttribute('data-class-id');
+                var clubId = this.getAttribute('data-club');
+                var formAction = `/club-profile/${clubId}/classes/${classId}`;
+                form.method = "POST";
+                form.action = formAction;
+
+                modal.classList.remove('hidden');
+            });
+        });
+
+        /**
+         * Modal de eliminación de clase
+         */
+        var classDeleteButton = document.querySelectorAll('.classDeleteButton');
+        classDeleteButton.forEach(button => {
+            button.addEventListener('click', function() {
+                cleanForm();
+
+                contenedorDatos.classList.add('mt-4');
+                modaltitle.textContent = '¿Desea eliminar la clase?';
+
+                let csrfInput = form.querySelector('input[name="_token"]');
+                if (!csrfInput) {
+                    csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content');
+                    form.appendChild(csrfInput);
+                }
+
+                var classLevel = this.getAttribute('data-class-level');
+                var classCourt = this.getAttribute('data-class-court');
+                var classDate = this.getAttribute('data-class-date');
+                var classStart = this.getAttribute('data-class-start');
+                var classEnd = this.getAttribute('data-class-end');
+
+                // Crear y añadir un div para Fecha
+                var divDate = document.createElement('div');
+                divDate.textContent = classDate;
+                divDate.setAttribute('data-class-date', classDate);
+                divDate.classList.add('text-md');
+                contenedorDatos.appendChild(divDate);
+
+                // Crear y añadir un div para Hora
+                var divStart = document.createElement('div');
+                divStart.textContent = classStart + " a " +
+                    classEnd; // Asumiendo que classStart y classEnd están definidos
+                divStart.setAttribute('data-class-start', classStart);
+
+                // Crear el elemento SVG
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttributeNS(null, "viewBox", "0 0 24 24");
+                svg.setAttributeNS(null, "fill", "none");
+                svg.setAttributeNS(null, "stroke-width", "1.5");
+                svg.setAttributeNS(null, "stroke", "currentColor");
+                svg.classList.add(
+                    'size-6'
+                ); // Asumiendo que tienes definido este estilo en algún lugar de tu CSS
+
+                // Crear el path del SVG
+                var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttributeNS(null, "stroke-linecap", "round");
+                path.setAttributeNS(null, "stroke-linejoin", "round");
+                path.setAttributeNS(null, "d",
+                    "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z");
+
+                // Añadir el path al SVG
+                svg.appendChild(path);
+
+                divStart.classList.add('flex', 'flex-row', 'text-md', 'align-items-center',
+                    'gap-3');
+                // Añadir el SVG al div de la hora
+                divStart.appendChild(svg);
+                // Finalmente, añadir divStart al contenedor
+                contenedorDatos.appendChild(divStart);
+
+                // Crear y añadir un div para Pista
+                var divCourt = document.createElement('div');
+                divCourt.textContent = 'Pista ' + classCourt;
+                divCourt.setAttribute('data-class-court', classCourt);
+                divCourt.classList.add('text-md');
+                contenedorDatos.appendChild(divCourt);
+
+                let methodInput = form.querySelector('input[name="_method"]');
+                if (!methodInput) {
+                    methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    form.appendChild(methodInput);
+                }
+
+                var classId = this.getAttribute('data-class-id');
+                var clubId = this.getAttribute('data-club');
+                var formAction = `/club-profile/${clubId}/classes/${classId}`;
+                form.method = "POST";
+                form.action = formAction;
+
+                modal.classList.remove('hidden');
+            });
+        });
+
+        /**
+         * Modal de creación de torneo
+         */
         var createTournamentButton = document.getElementById('createTournamentButton');
         if (createTournamentButton) {
             createTournamentButton.addEventListener('click', function() {
 
-                cleanForm(); // Suponiendo que esta función limpia adecuadamente el formulario
+                cleanForm();
 
                 contenedorDatos.classList.add('mt-4')
                 modaltitle.textContent = 'Crear un nuevo torneo';
@@ -724,7 +1072,7 @@
                 nameInput.name = 'name';
                 nameInput.placeholder = 'Nombre del torneo';
                 nameInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir label y select para el estado del torneo
                 var statusLabel = document.createElement('label');
@@ -734,7 +1082,7 @@
                 var statusSelect = document.createElement('select');
                 statusSelect.name = 'status';
                 statusSelect.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
                 ['Abierto', 'En progreso', 'Cerrado'].forEach(function(status) {
                     var option = document.createElement('option');
                     option.value = status;
@@ -751,7 +1099,132 @@
                 descriptionTextarea.name = 'description';
                 descriptionTextarea.placeholder = 'Descripción del torneo';
                 descriptionTextarea.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                // Crear y añadir label e input para la URL de la foto
+                var photoLabel = document.createElement('label');
+                photoLabel.textContent = 'Foto del torneo';
+                photoLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                var fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.name = 'photo_url';
+                fileInput.className =
+                    'block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-black hover:file:bg-lime-300 focus:border-lime-300 focus:ring-lime-300';
+
+                // Crear y añadir label e input para la fecha de inicio
+                var startDateLabel = document.createElement('label');
+                startDateLabel.textContent = 'Fecha de inicio';
+                startDateLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                var startDateInput = document.createElement('input');
+                startDateInput.type = 'date';
+                startDateInput.name = 'start_date';
+                startDateInput.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                // Crear y añadir label e input para la fecha de fin
+                var endDateLabel = document.createElement('label');
+                endDateLabel.textContent = 'Fecha de fin';
+                endDateLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                var endDateInput = document.createElement('input');
+                endDateInput.type = 'date';
+                endDateInput.name = 'end_date';
+                endDateInput.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                form.insertBefore(nameLabel, buttonContainer);
+                form.insertBefore(nameInput, buttonContainer);
+                form.insertBefore(statusLabel, buttonContainer);
+                form.insertBefore(statusSelect, buttonContainer);
+                form.insertBefore(descriptionLabel, buttonContainer);
+                form.insertBefore(descriptionTextarea, buttonContainer);
+                form.insertBefore(photoLabel, buttonContainer);
+                form.insertBefore(fileInput, buttonContainer);
+                form.insertBefore(startDateLabel, buttonContainer);
+                form.insertBefore(startDateInput, buttonContainer);
+                form.insertBefore(endDateLabel, buttonContainer);
+                form.insertBefore(endDateInput, buttonContainer);
+
+                var clubId = this.getAttribute('data-club');
+                var formAction = `/tournaments/${clubId}/store`;
+
+                form.method = "POST"
+
+                form.action = formAction;
+
+                modal.classList.remove('hidden');
+            });
+        }
+
+        /**
+         * Modal para editar torneo
+         */
+        var tournamentEditButton = document.querySelectorAll('.tournamentEditButton');
+        tournamentEditButton.forEach(button => {
+            button.addEventListener('click', function() {
+                cleanForm();
+                contenedorDatos.classList.add('mt-4');
+                modaltitle.textContent = 'Editar clase';
+
+                let csrfInput = form.querySelector('input[name="_token"]');
+                if (!csrfInput) {
+                    csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content');
+                    form.appendChild(csrfInput);
+                }
+
+                let methodInput = form.querySelector('input[name="_method"]');
+                if (!methodInput) {
+                    methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'PUT';
+                    form.appendChild(methodInput);
+                }
+
+                // Crear y añadir label e input para el nombre del torneo
+                var nameLabel = document.createElement('label');
+                nameLabel.textContent = 'Nombre del torneo';
+                nameLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                var nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.name = 'name';
+                nameInput.placeholder = 'Nombre del torneo';
+                nameInput.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                // Crear y añadir label y select para el estado del torneo
+                var statusLabel = document.createElement('label');
+                statusLabel.textContent = 'Estado del torneo';
+                statusLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                var statusSelect = document.createElement('select');
+                statusSelect.name = 'status';
+                statusSelect.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                ['Abierto', 'En progreso', 'Cerrado'].forEach(function(status) {
+                    var option = document.createElement('option');
+                    option.value = status;
+                    option.textContent = status;
+                    statusSelect.appendChild(option);
+                });
+
+                // Crear y añadir label y textarea para la descripción
+                var descriptionLabel = document.createElement('label');
+                descriptionLabel.textContent = 'Descripción del torneo';
+                descriptionLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                var descriptionTextarea = document.createElement('textarea');
+                descriptionTextarea.name = 'description';
+                descriptionTextarea.placeholder = 'Descripción del torneo';
+                descriptionTextarea.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir label e input para la URL de la foto
                 var photoLabel = document.createElement('label');
@@ -773,7 +1246,7 @@
                 startDateInput.type = 'date';
                 startDateInput.name = 'start_date';
                 startDateInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Crear y añadir label e input para la fecha de fin
                 var endDateLabel = document.createElement('label');
@@ -784,7 +1257,29 @@
                 endDateInput.type = 'date';
                 endDateInput.name = 'end_date';
                 endDateInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                // Obtener valores actuales del torneo desde el botón
+                var currentName = button.getAttribute('data-tournament-name');
+                var currentStatus = button.getAttribute('data-tournament-status');
+                var currentDescription = button.getAttribute('data-tournament-description');
+                var currentPhoto = button.getAttribute('data-tournament-photo');
+
+                var currentStartDate = button.getAttribute('data-tournament-start').split('/')
+                    .join('-');
+                var currentEndDate = button.getAttribute('data-tournament-end').split('/').join(
+                    '-');
+
+                // Establecer los valores de los campos del formulario
+                nameInput.value = currentName;
+                descriptionTextarea.value = currentDescription;
+                startDateInput.value = currentStartDate;
+                endDateInput.value = currentEndDate;
+
+                // Seleccionar el estado actual en el select de estado
+                Array.from(statusSelect.options).forEach(option => {
+                    if (option.value === currentStatus) option.selected = true;
+                });
 
                 form.insertBefore(nameLabel, buttonContainer);
                 form.insertBefore(nameInput, buttonContainer);
@@ -799,13 +1294,69 @@
                 form.insertBefore(endDateLabel, buttonContainer);
                 form.insertBefore(endDateInput, buttonContainer);
 
+                var tournamentId = this.getAttribute('data-tournament-id');
                 var clubId = this.getAttribute('data-club');
-                var formAction = `/tournaments/${clubId}/store`;
+                var formAction = `/tournaments/${clubId}/tournament/${tournamentId}`;
+                form.method = "POST";
                 form.action = formAction;
 
                 modal.classList.remove('hidden');
             });
-        }
+        });
+
+        /**
+         * Modal para eliminar un torneo
+         */
+        var tournamentDeleteButton = document.querySelectorAll('.tournamentDeleteButton');
+        tournamentDeleteButton.forEach(button => {
+            button.addEventListener('click', function() {
+                cleanForm();
+
+                contenedorDatos.classList.add('mt-4');
+                modaltitle.textContent = '¿Desea eliminar el torneo?';
+
+                let csrfInput = form.querySelector('input[name="_token"]');
+                if (!csrfInput) {
+                    csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content');
+                    form.appendChild(csrfInput);
+                }
+
+                let methodInput = form.querySelector('input[name="_method"]');
+                if (!methodInput) {
+                    methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+                    form.appendChild(methodInput);
+                }
+
+                var currentName = button.getAttribute('data-tournament-name');
+                var currentStartDate = button.getAttribute('data-tournament-start');
+                var currentEndDate = button.getAttribute('data-tournament-end');
+
+                var divName = document.createElement('div');
+                divName.textContent = currentName;
+                divName.classList.add('text-md');
+                contenedorDatos.appendChild(divName);
+
+                var divDate = document.createElement('div');
+                divDate.textContent = currentStartDate + ' al ' + currentEndDate;
+                divDate.classList.add('text-md');
+                contenedorDatos.appendChild(divDate);
+
+                var tournamentId = this.getAttribute('data-tournament-id');
+                var clubId = this.getAttribute('data-club');
+                var formAction = `/tournaments/${clubId}/tournament/${tournamentId}`;
+                form.method = "POST";
+                form.action = formAction;
+
+                modal.classList.remove('hidden');
+            });
+        });
 
         /**
          * Modal de registro en clase
@@ -887,6 +1438,8 @@
                 var clubId = this.getAttribute('data-club');
                 var formAction = `/club-profile/${clubId}/classes/${classId}/register`;
 
+                form.method = "POST"
+
                 form.action = formAction;
                 modal.classList.remove('hidden');
             });
@@ -899,17 +1452,13 @@
         if (openModalInfoButton) {
             openModalInfoButton.addEventListener('click', function() {
 
-                cleanForm(); // Limpia el formulario cada vez que cualquier modal se abre
-
-                modaltitle.textContent = "";
-
-                divPrincipal.classList.add('sm:max-w-md');
+                cleanForm();
 
                 modaltitle.textContent = 'Editar información';
 
                 // Crea un contenedor div para el grupo de la descripción
                 var descriptionDiv = document.createElement('div');
-                descriptionDiv.className = 'flex flex-col gap-1';
+                descriptionDiv.className = 'flex flex-col gap-1 mt-4';
 
                 // Crea la etiqueta label para el área de texto
                 var label = document.createElement('label');
@@ -922,7 +1471,8 @@
                 textarea.setAttribute('id', 'description');
                 textarea.setAttribute('cols', '40');
                 textarea.setAttribute('rows', '3');
-                textarea.className = 'rounded';
+                textarea.className =
+                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
                 // Agrega la etiqueta y el área de texto al div de descripción
                 descriptionDiv.appendChild(label);
@@ -951,6 +1501,10 @@
 
                 var clubId = this.getAttribute('data-club');
                 var formAction = `/clubs/${clubId}/edit-details`;
+
+                form.method = "POST"
+
+                form.setAttribute('enctype', 'multipart/form-data');
 
                 form.action = formAction;
 

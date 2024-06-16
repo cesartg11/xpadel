@@ -29,7 +29,7 @@ class ClubClassRegistration extends Model
      */
     public function clubClass()
     {
-        return $this->belongsTo(ClubClass::class);
+        return $this->belongsTo(ClubClass::class, 'class_id');
     }
 
 }

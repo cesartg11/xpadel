@@ -154,7 +154,7 @@
             </div>
         @else
             <a href="{{ route('login') }}"
-                class="flex justify-center align-content-center text-black rounded-full w-32 h-8 p-1 bg-lime-300">
+                class="flex justify-center items-center text-black rounded w-28 h-9 bg-lime-300 hover:bg-lime-400">
                 Iniciar sesión
             </a>
         @endauth

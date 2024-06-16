@@ -24,7 +24,7 @@
                     <option value="">Provincia</option>
                 </select>
 
-                <button class="rounded w-28 h-9 text-sm border-2 border-slate-300 bg-lime-300" type="submit"
+                <button class="rounded w-28 h-9 text-sm border-2 border-slate-300 bg-lime-300 hover:bg-lime-400" type="submit"
                     id="searchButton">Buscar</button>
             </div>
 

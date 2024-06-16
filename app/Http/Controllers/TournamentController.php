@@ -50,29 +50,33 @@ class TournamentController extends Controller
 
             return redirect()->back()->with('success', 'Torneo creado con éxito.');
         } catch (Exception $e) {
-            return redirect('clubs.show', compact('club'))->with('error', 'No se pudo crear el torneo. ' . $e->getMessage());
+            return redirect()->route('clubs.show', compact('club'))->with('error', 'No se pudo crear el torneo. ' . $e->getMessage());
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateUpdateTournamentRequest $request, ClubProfile $club, Tournament $tournament)
+    public function update(CreateUpdateTournamentRequest $request, $clubId, $tournamentId)
     {
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
+
+        $club = ClubProfile::findOrFail($clubId);
 
         if ($user->clubProfile->id !== $club->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
         try {
+            $tournament = Tournament::findOrFail($tournamentId);
+
             $tournament->update([
                 'name' => $request->name,
                 'status' => $request->status,
@@ -82,38 +86,42 @@ class TournamentController extends Controller
                 'end_date' => $request->end_date,
             ]);
 
-            return redirect('/tournaments')->with('success', 'Torneo modificado con éxito.');
+            return redirect()->back()->with('success', 'Torneo modificado con éxito.');
         } catch (Exception $e) {
-            return redirect('clubs.show')->with('error', 'No se pudo modificar el torneo. ' . $e->getMessage());
+            return redirect()->route('clubs.show', compact('club'))->with('error', 'No se pudo modificar el torneo. ' . $e->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ClubProfile $club, Tournament $tournament)
+    public function destroy($clubId, $tournamentId)
     {
-
         $user = auth()->user();
         if (!auth()->check() || !$user->clubProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
-        if ($user->hasRole('club')) {
+        if (!$user->hasRole('club')) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
+
+        $club = ClubProfile::findOrFail($clubId);
 
         if ($user->clubProfile->id !== $club->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
         try {
+            $tournament = Tournament::findOrFail($tournamentId);
+
             $tournament->matches()->delete();
             $tournament->registrations()->delete();
             $tournament->delete();
-            return redirect('/tournaments')->with('success', 'Torneo modificado con éxito.');
+
+            return redirect()->back()->with('success', 'Torneo eliminado con éxito.');
         } catch (Exception $e) {
-            return redirect('clubs.show')->with('error', 'No se pudo modificar el torneo. ' . $e->getMessage());
+            return redirect()->route('clubs.show', compact('club'))->with('error', 'No se pudo eliminar el torneo. ' . $e->getMessage());
         }
     }
 
@@ -223,7 +231,8 @@ class TournamentController extends Controller
         $shuffledRegistrations = $registrations->shuffle();
 
         foreach ($shuffledRegistrations->chunk(2) as $pair) {
-            if (count($pair) < 2) continue;
+            if (count($pair) < 2)
+                continue;
 
             $pair1 = $pair[0];
             $pair2 = $pair[1];
