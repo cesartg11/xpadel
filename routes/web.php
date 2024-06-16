@@ -54,7 +54,14 @@ Route::prefix('tournaments')->group(function () {
     Route::delete('/{tournament}/registration/{tournamentRegistration}', [TournamentController::class, 'destroyRegister'])->middleware(['auth', 'role:user'])->name('tournaments.destroy.register');
 });
 
-//Ruta de users
-Route::resource('users', UserController::class)->parameters([
-    'users' => 'user'
-]);
+// Rutas de usuarios
+Route::prefix('users')->middleware('auth')->group(function () {
+    Route::get('/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/', [UserController::class, 'store'])->name('users.store');
+    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
+
+

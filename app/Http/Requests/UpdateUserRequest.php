@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use PHPUnit\Framework\Constraint\IsTrue;
 
 class UpdateUserRequest extends FormRequest
@@ -23,15 +24,18 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($this->user), // Asegúrate de pasar el modelo de usuario adecuado
+            ],
+            //'password' => 'required|min:6',
             // Añadir validaciones para los campos del perfil
             'name' => 'required|max:255',
             'surname' => 'required|max:255',
             'age' => 'required|integer',
             'telephone' => 'required',
             'profile_photo_path' => 'nullable|file|mimes:jpeg,jpg,png'
-
         ];
     }
 
@@ -46,8 +50,8 @@ class UpdateUserRequest extends FormRequest
             'email.required' => 'Es necesario ingresar un correo electrónico.',
             'email.email' => 'Por favor, ingresa una dirección de correo electrónico válida.',
             'email.unique' => 'Este correo electrónico ya está en uso. Por favor, intenta con otro.',
-            'password.required' => 'Es necesario ingresar una contraseña.',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            // 'password.required' => 'Es necesario ingresar una contraseña.',
+            // 'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
             'name.required' => 'Por favor, ingresa tu nombre.',
             'name.max' => 'El nombre no debe exceder los 255 caracteres.',
             'surname.required' => 'Por favor, ingresa tu apellido.',

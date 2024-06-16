@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClubProfile;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Models\User;
@@ -13,32 +14,14 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $users = User::role('user')->with('userProfile')->get();
-        return view('users.index', compact('users'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('users.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(CreateUserRequest $request)
     {
         try {
-
             DB::beginTransaction();
 
-            if($request->password !== $request->password_confirmation){
+            if ($request->password !== $request->password_confirmation) {
                 DB::rollBack();
                 return back()->withErrors(['password' => 'Las contraseñas no coinciden'])->withInput();
             }
@@ -65,20 +48,9 @@ class UserController extends Controller
             return redirect()->route('clubs.index');
 
         } catch (Exception $e) {
-
-            //Cancelamos la transacion
             DB::rollBack();
             return redirect()->route('clubs.index')->with('error', 'No se pudo crear el usuario. ' . $e->getMessage());
         }
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        return view('users.show', compact('user'));
     }
 
     /**
@@ -86,7 +58,17 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        if (auth()->check()) {
+            if ($user->hasRole('user')) {
+                $profile = $user->userProfile;
+            } else if ($user->hasRole('club')) {
+                $profile = $user->clubProfile;
+            }
+
+            return view('users.edit', compact('user', 'profile'));
+        } else {
+            return redirect()->route('login')->with('error', 'Debes iniciar sesión');
+        }
     }
 
     /**
@@ -94,6 +76,14 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+
+        if (!auth()->check() || !$user->userProfile) {
+            return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
+        }
+
+        if (!$user->hasRole('user')) {
+            return redirect()->route('clubs.index', compact('club'))->with('error', 'No tienes permiso para realizar esta acción.');
+        }
 
         DB::beginTransaction();
 
@@ -118,12 +108,12 @@ class UserController extends Controller
 
             DB::commit();
 
-            return redirect('/users')->with('success', 'Pérfil de usuario modificado con éxito.');
+            return redirect()->back()->with('success', 'Pérfil de usuario modificado con éxito.');
         } catch (Exception $e) {
 
             DB::rollBack();
 
-            return redirect('/users')->with('error', 'No se pudo modiifcar el pérfil de usuario. ' . $e->getMessage());
+            return redirect()->back()->with('error', 'No se pudo modiifcar el pérfil de usuario. ' . $e->getMessage());
         }
     }
 

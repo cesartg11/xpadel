@@ -132,8 +132,8 @@
                             <p class="text-gray-700 block px-4 py-2 text-sm" role="menuitem">{{ auth()->user()->email }}
                             </p>
                             <hr class="my-2">
-                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
-                                id="menu-item-0">Pérfil</a>
+                            <a href="{{ route('users.edit', ['user' => auth()->user()->id]) }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" id="menu-item-0">Perfil</a>
+
                             <form method="POST" action="{{ route('logout') }}" role="none">
                                 @csrf
                                 <button type="submit" class="text-gray-700 block w-full px-4 py-2 text-left text-sm"

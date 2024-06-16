@@ -17,7 +17,8 @@
                 @role('club')
                     @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
                         <div class="mr-20">
-                            <button id="openModalButton" class="flex flex-row items-center justify-center gap-2 h-10 bg-lime-300 hover:bg-lime-400 text-black py-2 px-4 rounded"
+                            <button id="openModalButton"
+                                class="flex flex-row items-center justify-center gap-2 h-10 bg-lime-300 hover:bg-lime-400 text-black py-2 px-4 rounded"
                                 data-club="{{ $club->id }}">
                                 Editar foto
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -163,7 +164,8 @@
                     <h2 class="text-xl font-semibold mb-4">Clases</h2>
                     @role('club')
                         @if (auth()->user()->clubProfile && $club->id == auth()->user()->clubProfile->id)
-                            <button id="createClassButton" class="flex flex-row items-center justify-center gap-2 px-4 py-2  text-black rounded bg-lime-300 hover:bg-lime-400"
+                            <button id="createClassButton"
+                                class="flex flex-row items-center justify-center gap-2 px-4 py-2  text-black rounded bg-lime-300 hover:bg-lime-400"
                                 data-club="{{ $club->id }}" data-club-courts="{{ json_encode($club->courts) }}">
                                 Crear clase
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -251,11 +253,11 @@
                                 class="flex flex-row items-center justify-center gap-2 px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400"
                                 data-club="{{ $club->id }}">
                                 Crear Torneo
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
                             </button>
                         @endif
                     @endrole
@@ -343,10 +345,10 @@
                                     data-club="{{ $club->id }}">
                                     Editar información
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                </svg>
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>
                                 </button>
                             </div>
                         @endif
@@ -794,251 +796,260 @@
          * Modal de modificación de clase
          */
         var classEditButton = document.querySelectorAll('.classEditButton');
-        classEditButton.forEach(button => {
-            button.addEventListener('click', function() {
-                cleanForm();
-                contenedorDatos.classList.add('mt-4');
-                modaltitle.textContent = 'Editar clase';
+        if (classEditButton.length > 0) {
 
-                let csrfInput = form.querySelector('input[name="_token"]');
-                if (!csrfInput) {
-                    csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content');
-                    form.appendChild(csrfInput);
-                }
 
-                let methodInput = form.querySelector('input[name="_method"]');
-                if (!methodInput) {
-                    methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'PUT';
-                    form.appendChild(methodInput);
-                }
+            classEditButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    cleanForm();
+                    contenedorDatos.classList.add('mt-4');
+                    modaltitle.textContent = 'Editar clase';
 
-                var courts = JSON.parse(this.getAttribute('data-club-courts'));
-                var currentCourtId = this.getAttribute('data-class-court');
-                var currentLevel = this.getAttribute('data-class-level');
-                var currentDate = this.getAttribute('data-class-start').split(' ')[0];
-                var currentStartTime = this.getAttribute('data-class-start').split(' ')[1];
-                var currentEndTime = this.getAttribute('data-class-end').split(' ')[1];
+                    let csrfInput = form.querySelector('input[name="_token"]');
+                    if (!csrfInput) {
+                        csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content');
+                        form.appendChild(csrfInput);
+                    }
 
-                // Setup court select
-                var courtLabel = document.createElement('label');
-                courtLabel.textContent = 'Pista';
-                courtLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
-                var courtSelect = document.createElement('select');
-                courtSelect.name = 'court_id';
-                courtSelect.id = 'courtEdit';
-                courtSelect.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-                courts.forEach(function(court) {
-                    var option = document.createElement('option');
-                    option.value = court.id;
-                    option.textContent = 'Pista ' + court.number;
-                    if (court.id == currentCourtId) option.selected = true;
-                    courtSelect.appendChild(option);
+                    let methodInput = form.querySelector('input[name="_method"]');
+                    if (!methodInput) {
+                        methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'PUT';
+                        form.appendChild(methodInput);
+                    }
+
+                    var courts = JSON.parse(this.getAttribute('data-club-courts'));
+                    var currentCourtId = this.getAttribute('data-class-court');
+                    var currentLevel = this.getAttribute('data-class-level');
+                    var currentDate = this.getAttribute('data-class-start').split(' ')[0];
+                    var currentStartTime = this.getAttribute('data-class-start').split(' ')[1];
+                    var currentEndTime = this.getAttribute('data-class-end').split(' ')[1];
+
+                    // Setup court select
+                    var courtLabel = document.createElement('label');
+                    courtLabel.textContent = 'Pista';
+                    courtLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                    var courtSelect = document.createElement('select');
+                    courtSelect.name = 'court_id';
+                    courtSelect.id = 'courtEdit';
+                    courtSelect.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    courts.forEach(function(court) {
+                        var option = document.createElement('option');
+                        option.value = court.id;
+                        option.textContent = 'Pista ' + court.number;
+                        if (court.id == currentCourtId) option.selected = true;
+                        courtSelect.appendChild(option);
+                    });
+
+                    // Setup level select
+                    var levelLabel = document.createElement('label');
+                    levelLabel.textContent = 'Nivel';
+                    levelLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                    var levelSelect = document.createElement('select');
+                    levelSelect.name = 'level';
+                    levelSelect.id = 'levelEdit';
+                    levelSelect.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    ['Pro', 'Medio', 'Principiante'].forEach(function(level) {
+                        var option = document.createElement('option');
+                        option.value = level;
+                        option.textContent = level;
+                        if (level === currentLevel) option.selected = true;
+                        levelSelect.appendChild(option);
+                    });
+
+                    // Setup date input
+                    var dateLabel = document.createElement('label');
+                    dateLabel.textContent = 'Fecha';
+                    dateLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                    var dateInput = document.createElement('input');
+                    dateInput.type = 'date';
+                    dateInput.name = 'date';
+                    dateInput.id = 'dateEdit';
+                    dateInput.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    dateInput.value = currentDate;
+
+                    // Setup start time input
+                    var startTimeLabel = document.createElement('label');
+                    startTimeLabel.textContent = 'Hora de inicio';
+                    startTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                    var startTimeInput = document.createElement('input');
+                    startTimeInput.type = 'time';
+                    startTimeInput.name = 'start';
+                    startTimeInput.id = 'startEdit';
+                    startTimeInput.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    startTimeInput.value = currentStartTime;
+
+                    // Setup end time input
+                    var endTimeLabel = document.createElement('label');
+                    endTimeLabel.textContent = 'Hora de fin';
+                    endTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
+                    var endTimeInput = document.createElement('input');
+                    endTimeInput.type = 'time';
+                    endTimeInput.name = 'end';
+                    endTimeInput.id = 'endEdit';
+                    endTimeInput.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    endTimeInput.value = currentEndTime;
+
+                    // Crear y añadir input hidden para la hora de inicio formateada
+                    var startTFormatimeInput = document.createElement('input');
+                    startTFormatimeInput.type = 'hidden';
+                    startTFormatimeInput.name = 'start_time';
+                    startTFormatimeInput.id = 'formatted_start_time';
+
+                    // Crear y añadir input hidden para la hora de fin formateada
+                    var endFormatTimeInput = document.createElement('input');
+                    endFormatTimeInput.type = 'hidden';
+                    endFormatTimeInput.name = 'end_time';
+                    endFormatTimeInput.id = 'formatted_end_time';
+
+                    form.insertBefore(startTFormatimeInput, buttonContainer);
+                    form.insertBefore(endFormatTimeInput, buttonContainer);
+                    form.insertBefore(courtLabel, buttonContainer);
+                    form.insertBefore(courtSelect, buttonContainer);
+                    form.insertBefore(levelLabel, buttonContainer);
+                    form.insertBefore(levelSelect, buttonContainer);
+                    form.insertBefore(dateLabel, buttonContainer);
+                    form.insertBefore(dateInput, buttonContainer);
+                    form.insertBefore(startTimeLabel, buttonContainer);
+                    form.insertBefore(startTimeInput, buttonContainer);
+                    form.insertBefore(endTimeLabel, buttonContainer);
+                    form.insertBefore(endTimeInput, buttonContainer);
+
+                    form.onsubmit = function(event) {
+                        event.preventDefault(); // Evitar el envío automático
+                        var date = document.getElementById('dateEdit').value;
+                        var startTime = document.getElementById('startEdit').value.split(
+                            ':');
+                        var realStartTime = startTime[0] + ":" + startTime[1];
+                        var endTime = document.getElementById('endEdit').value.split(':');
+                        var realEndTime = endTime[0] + ":" + endTime[1];
+
+                        document.getElementById('formatted_start_time').value = date + ' ' +
+                            realStartTime;
+                        document.getElementById('formatted_end_time').value = date + ' ' +
+                            realEndTime;
+
+                        form.submit();
+                    };
+
+                    var classId = this.getAttribute('data-class-id');
+                    var clubId = this.getAttribute('data-club');
+                    var formAction = `/club-profile/${clubId}/classes/${classId}`;
+                    form.method = "POST";
+                    form.action = formAction;
+
+                    modal.classList.remove('hidden');
                 });
-
-                // Setup level select
-                var levelLabel = document.createElement('label');
-                levelLabel.textContent = 'Nivel';
-                levelLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
-                var levelSelect = document.createElement('select');
-                levelSelect.name = 'level';
-                levelSelect.id = 'levelEdit';
-                levelSelect.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-                ['Pro', 'Medio', 'Principiante'].forEach(function(level) {
-                    var option = document.createElement('option');
-                    option.value = level;
-                    option.textContent = level;
-                    if (level === currentLevel) option.selected = true;
-                    levelSelect.appendChild(option);
-                });
-
-                // Setup date input
-                var dateLabel = document.createElement('label');
-                dateLabel.textContent = 'Fecha';
-                dateLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
-                var dateInput = document.createElement('input');
-                dateInput.type = 'date';
-                dateInput.name = 'date';
-                dateInput.id = 'dateEdit';
-                dateInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-                dateInput.value = currentDate;
-
-                // Setup start time input
-                var startTimeLabel = document.createElement('label');
-                startTimeLabel.textContent = 'Hora de inicio';
-                startTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
-                var startTimeInput = document.createElement('input');
-                startTimeInput.type = 'time';
-                startTimeInput.name = 'start';
-                startTimeInput.id = 'startEdit';
-                startTimeInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-                startTimeInput.value = currentStartTime;
-
-                // Setup end time input
-                var endTimeLabel = document.createElement('label');
-                endTimeLabel.textContent = 'Hora de fin';
-                endTimeLabel.className = 'block text-sm font-medium text-gray-700 mt-3';
-                var endTimeInput = document.createElement('input');
-                endTimeInput.type = 'time';
-                endTimeInput.name = 'end';
-                endTimeInput.id = 'endEdit';
-                endTimeInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-                endTimeInput.value = currentEndTime;
-
-                // Crear y añadir input hidden para la hora de inicio formateada
-                var startTFormatimeInput = document.createElement('input');
-                startTFormatimeInput.type = 'hidden';
-                startTFormatimeInput.name = 'start_time';
-                startTFormatimeInput.id = 'formatted_start_time';
-
-                // Crear y añadir input hidden para la hora de fin formateada
-                var endFormatTimeInput = document.createElement('input');
-                endFormatTimeInput.type = 'hidden';
-                endFormatTimeInput.name = 'end_time';
-                endFormatTimeInput.id = 'formatted_end_time';
-
-                form.insertBefore(startTFormatimeInput, buttonContainer);
-                form.insertBefore(endFormatTimeInput, buttonContainer);
-                form.insertBefore(courtLabel, buttonContainer);
-                form.insertBefore(courtSelect, buttonContainer);
-                form.insertBefore(levelLabel, buttonContainer);
-                form.insertBefore(levelSelect, buttonContainer);
-                form.insertBefore(dateLabel, buttonContainer);
-                form.insertBefore(dateInput, buttonContainer);
-                form.insertBefore(startTimeLabel, buttonContainer);
-                form.insertBefore(startTimeInput, buttonContainer);
-                form.insertBefore(endTimeLabel, buttonContainer);
-                form.insertBefore(endTimeInput, buttonContainer);
-
-                form.onsubmit = function(event) {
-                    event.preventDefault(); // Evitar el envío automático
-                    var date = document.getElementById('dateEdit').value;
-                    var startTime = document.getElementById('startEdit').value.split(':');
-                    var realStartTime = startTime[0] + ":" + startTime[1];
-                    var endTime = document.getElementById('endEdit').value.split(':');
-                    var realEndTime = endTime[0] + ":" + endTime[1];
-
-                    document.getElementById('formatted_start_time').value = date + ' ' +
-                        realStartTime;
-                    document.getElementById('formatted_end_time').value = date + ' ' +
-                        realEndTime;
-
-                    form.submit();
-                };
-
-                var classId = this.getAttribute('data-class-id');
-                var clubId = this.getAttribute('data-club');
-                var formAction = `/club-profile/${clubId}/classes/${classId}`;
-                form.method = "POST";
-                form.action = formAction;
-
-                modal.classList.remove('hidden');
             });
-        });
+        }
 
         /**
          * Modal de eliminación de clase
          */
         var classDeleteButton = document.querySelectorAll('.classDeleteButton');
-        classDeleteButton.forEach(button => {
-            button.addEventListener('click', function() {
-                cleanForm();
+        if (classDeleteButton.length > 0) {
 
-                contenedorDatos.classList.add('mt-4');
-                modaltitle.textContent = '¿Desea eliminar la clase?';
 
-                let csrfInput = form.querySelector('input[name="_token"]');
-                if (!csrfInput) {
-                    csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content');
-                    form.appendChild(csrfInput);
-                }
+            classDeleteButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    cleanForm();
 
-                var classLevel = this.getAttribute('data-class-level');
-                var classCourt = this.getAttribute('data-class-court');
-                var classDate = this.getAttribute('data-class-date');
-                var classStart = this.getAttribute('data-class-start');
-                var classEnd = this.getAttribute('data-class-end');
+                    contenedorDatos.classList.add('mt-4');
+                    modaltitle.textContent = '¿Desea eliminar la clase?';
 
-                // Crear y añadir un div para Fecha
-                var divDate = document.createElement('div');
-                divDate.textContent = classDate;
-                divDate.setAttribute('data-class-date', classDate);
-                divDate.classList.add('text-md');
-                contenedorDatos.appendChild(divDate);
+                    let csrfInput = form.querySelector('input[name="_token"]');
+                    if (!csrfInput) {
+                        csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content');
+                        form.appendChild(csrfInput);
+                    }
 
-                // Crear y añadir un div para Hora
-                var divStart = document.createElement('div');
-                divStart.textContent = classStart + " a " +
-                    classEnd; // Asumiendo que classStart y classEnd están definidos
-                divStart.setAttribute('data-class-start', classStart);
+                    var classLevel = this.getAttribute('data-class-level');
+                    var classCourt = this.getAttribute('data-class-court');
+                    var classDate = this.getAttribute('data-class-date');
+                    var classStart = this.getAttribute('data-class-start');
+                    var classEnd = this.getAttribute('data-class-end');
 
-                // Crear el elemento SVG
-                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttributeNS(null, "viewBox", "0 0 24 24");
-                svg.setAttributeNS(null, "fill", "none");
-                svg.setAttributeNS(null, "stroke-width", "1.5");
-                svg.setAttributeNS(null, "stroke", "currentColor");
-                svg.classList.add(
-                    'size-6'
-                ); // Asumiendo que tienes definido este estilo en algún lugar de tu CSS
+                    // Crear y añadir un div para Fecha
+                    var divDate = document.createElement('div');
+                    divDate.textContent = classDate;
+                    divDate.setAttribute('data-class-date', classDate);
+                    divDate.classList.add('text-md');
+                    contenedorDatos.appendChild(divDate);
 
-                // Crear el path del SVG
-                var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttributeNS(null, "stroke-linecap", "round");
-                path.setAttributeNS(null, "stroke-linejoin", "round");
-                path.setAttributeNS(null, "d",
-                    "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z");
+                    // Crear y añadir un div para Hora
+                    var divStart = document.createElement('div');
+                    divStart.textContent = classStart + " a " +
+                        classEnd; // Asumiendo que classStart y classEnd están definidos
+                    divStart.setAttribute('data-class-start', classStart);
 
-                // Añadir el path al SVG
-                svg.appendChild(path);
+                    // Crear el elemento SVG
+                    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svg.setAttributeNS(null, "viewBox", "0 0 24 24");
+                    svg.setAttributeNS(null, "fill", "none");
+                    svg.setAttributeNS(null, "stroke-width", "1.5");
+                    svg.setAttributeNS(null, "stroke", "currentColor");
+                    svg.classList.add(
+                        'size-6'
+                    ); // Asumiendo que tienes definido este estilo en algún lugar de tu CSS
 
-                divStart.classList.add('flex', 'flex-row', 'text-md', 'align-items-center',
-                    'gap-3');
-                // Añadir el SVG al div de la hora
-                divStart.appendChild(svg);
-                // Finalmente, añadir divStart al contenedor
-                contenedorDatos.appendChild(divStart);
+                    // Crear el path del SVG
+                    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttributeNS(null, "stroke-linecap", "round");
+                    path.setAttributeNS(null, "stroke-linejoin", "round");
+                    path.setAttributeNS(null, "d",
+                        "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z");
 
-                // Crear y añadir un div para Pista
-                var divCourt = document.createElement('div');
-                divCourt.textContent = 'Pista ' + classCourt;
-                divCourt.setAttribute('data-class-court', classCourt);
-                divCourt.classList.add('text-md');
-                contenedorDatos.appendChild(divCourt);
+                    // Añadir el path al SVG
+                    svg.appendChild(path);
 
-                let methodInput = form.querySelector('input[name="_method"]');
-                if (!methodInput) {
-                    methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'DELETE';
-                    form.appendChild(methodInput);
-                }
+                    divStart.classList.add('flex', 'flex-row', 'text-md', 'align-items-center',
+                        'gap-3');
+                    // Añadir el SVG al div de la hora
+                    divStart.appendChild(svg);
+                    // Finalmente, añadir divStart al contenedor
+                    contenedorDatos.appendChild(divStart);
 
-                var classId = this.getAttribute('data-class-id');
-                var clubId = this.getAttribute('data-club');
-                var formAction = `/club-profile/${clubId}/classes/${classId}`;
-                form.method = "POST";
-                form.action = formAction;
+                    // Crear y añadir un div para Pista
+                    var divCourt = document.createElement('div');
+                    divCourt.textContent = 'Pista ' + classCourt;
+                    divCourt.setAttribute('data-class-court', classCourt);
+                    divCourt.classList.add('text-md');
+                    contenedorDatos.appendChild(divCourt);
 
-                modal.classList.remove('hidden');
+                    let methodInput = form.querySelector('input[name="_method"]');
+                    if (!methodInput) {
+                        methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+                    }
+
+                    var classId = this.getAttribute('data-class-id');
+                    var clubId = this.getAttribute('data-club');
+                    var formAction = `/club-profile/${clubId}/classes/${classId}`;
+                    form.method = "POST";
+                    form.action = formAction;
+
+                    modal.classList.remove('hidden');
+                });
             });
-        });
+        }
 
         /**
          * Modal de creación de torneo
@@ -1162,288 +1173,300 @@
          * Modal para editar torneo
          */
         var tournamentEditButton = document.querySelectorAll('.tournamentEditButton');
-        tournamentEditButton.forEach(button => {
-            button.addEventListener('click', function() {
-                cleanForm();
-                contenedorDatos.classList.add('mt-4');
-                modaltitle.textContent = 'Editar clase';
+        if (tournamentEditButton.length > 0) {
 
-                let csrfInput = form.querySelector('input[name="_token"]');
-                if (!csrfInput) {
-                    csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content');
-                    form.appendChild(csrfInput);
-                }
+            tournamentEditButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    cleanForm();
+                    contenedorDatos.classList.add('mt-4');
+                    modaltitle.textContent = 'Editar clase';
 
-                let methodInput = form.querySelector('input[name="_method"]');
-                if (!methodInput) {
-                    methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'PUT';
-                    form.appendChild(methodInput);
-                }
+                    let csrfInput = form.querySelector('input[name="_token"]');
+                    if (!csrfInput) {
+                        csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content');
+                        form.appendChild(csrfInput);
+                    }
 
-                // Crear y añadir label e input para el nombre del torneo
-                var nameLabel = document.createElement('label');
-                nameLabel.textContent = 'Nombre del torneo';
-                nameLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+                    let methodInput = form.querySelector('input[name="_method"]');
+                    if (!methodInput) {
+                        methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'PUT';
+                        form.appendChild(methodInput);
+                    }
 
-                var nameInput = document.createElement('input');
-                nameInput.type = 'text';
-                nameInput.name = 'name';
-                nameInput.placeholder = 'Nombre del torneo';
-                nameInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    // Crear y añadir label e input para el nombre del torneo
+                    var nameLabel = document.createElement('label');
+                    nameLabel.textContent = 'Nombre del torneo';
+                    nameLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
 
-                // Crear y añadir label y select para el estado del torneo
-                var statusLabel = document.createElement('label');
-                statusLabel.textContent = 'Estado del torneo';
-                statusLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+                    var nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    nameInput.name = 'name';
+                    nameInput.placeholder = 'Nombre del torneo';
+                    nameInput.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
 
-                var statusSelect = document.createElement('select');
-                statusSelect.name = 'status';
-                statusSelect.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-                ['Abierto', 'En progreso', 'Cerrado'].forEach(function(status) {
-                    var option = document.createElement('option');
-                    option.value = status;
-                    option.textContent = status;
-                    statusSelect.appendChild(option);
+                    // Crear y añadir label y select para el estado del torneo
+                    var statusLabel = document.createElement('label');
+                    statusLabel.textContent = 'Estado del torneo';
+                    statusLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                    var statusSelect = document.createElement('select');
+                    statusSelect.name = 'status';
+                    statusSelect.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+                    ['Abierto', 'En progreso', 'Cerrado'].forEach(function(status) {
+                        var option = document.createElement('option');
+                        option.value = status;
+                        option.textContent = status;
+                        statusSelect.appendChild(option);
+                    });
+
+                    // Crear y añadir label y textarea para la descripción
+                    var descriptionLabel = document.createElement('label');
+                    descriptionLabel.textContent = 'Descripción del torneo';
+                    descriptionLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                    var descriptionTextarea = document.createElement('textarea');
+                    descriptionTextarea.name = 'description';
+                    descriptionTextarea.placeholder = 'Descripción del torneo';
+                    descriptionTextarea.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                    // Crear y añadir label e input para la URL de la foto
+                    var photoLabel = document.createElement('label');
+                    photoLabel.textContent = 'Foto del torneo';
+                    photoLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                    var fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.name = 'photo_url';
+                    fileInput.className =
+                        'block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-black hover:file:bg-lime-300';
+
+                    // Crear y añadir label e input para la fecha de inicio
+                    var startDateLabel = document.createElement('label');
+                    startDateLabel.textContent = 'Fecha de inicio';
+                    startDateLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                    var startDateInput = document.createElement('input');
+                    startDateInput.type = 'date';
+                    startDateInput.name = 'start_date';
+                    startDateInput.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                    // Crear y añadir label e input para la fecha de fin
+                    var endDateLabel = document.createElement('label');
+                    endDateLabel.textContent = 'Fecha de fin';
+                    endDateLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
+
+                    var endDateInput = document.createElement('input');
+                    endDateInput.type = 'date';
+                    endDateInput.name = 'end_date';
+                    endDateInput.className =
+                        'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
+
+                    // Obtener valores actuales del torneo desde el botón
+                    var currentName = button.getAttribute('data-tournament-name');
+                    var currentStatus = button.getAttribute('data-tournament-status');
+                    var currentDescription = button.getAttribute('data-tournament-description');
+                    var currentPhoto = button.getAttribute('data-tournament-photo');
+
+                    var currentStartDate = button.getAttribute('data-tournament-start').split(
+                            '/')
+                        .join('-');
+                    var currentEndDate = button.getAttribute('data-tournament-end').split('/')
+                        .join(
+                            '-');
+
+                    // Establecer los valores de los campos del formulario
+                    nameInput.value = currentName;
+                    descriptionTextarea.value = currentDescription;
+                    startDateInput.value = currentStartDate;
+                    endDateInput.value = currentEndDate;
+
+                    // Seleccionar el estado actual en el select de estado
+                    Array.from(statusSelect.options).forEach(option => {
+                        if (option.value === currentStatus) option.selected = true;
+                    });
+
+                    form.insertBefore(nameLabel, buttonContainer);
+                    form.insertBefore(nameInput, buttonContainer);
+                    form.insertBefore(statusLabel, buttonContainer);
+                    form.insertBefore(statusSelect, buttonContainer);
+                    form.insertBefore(descriptionLabel, buttonContainer);
+                    form.insertBefore(descriptionTextarea, buttonContainer);
+                    form.insertBefore(photoLabel, buttonContainer);
+                    form.insertBefore(fileInput, buttonContainer);
+                    form.insertBefore(startDateLabel, buttonContainer);
+                    form.insertBefore(startDateInput, buttonContainer);
+                    form.insertBefore(endDateLabel, buttonContainer);
+                    form.insertBefore(endDateInput, buttonContainer);
+
+                    var tournamentId = this.getAttribute('data-tournament-id');
+                    var clubId = this.getAttribute('data-club');
+                    var formAction = `/tournaments/${clubId}/tournament/${tournamentId}`;
+                    form.method = "POST";
+                    form.action = formAction;
+
+                    modal.classList.remove('hidden');
                 });
-
-                // Crear y añadir label y textarea para la descripción
-                var descriptionLabel = document.createElement('label');
-                descriptionLabel.textContent = 'Descripción del torneo';
-                descriptionLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
-
-                var descriptionTextarea = document.createElement('textarea');
-                descriptionTextarea.name = 'description';
-                descriptionTextarea.placeholder = 'Descripción del torneo';
-                descriptionTextarea.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-
-                // Crear y añadir label e input para la URL de la foto
-                var photoLabel = document.createElement('label');
-                photoLabel.textContent = 'Foto del torneo';
-                photoLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
-
-                var fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.name = 'photo_url';
-                fileInput.className =
-                    'block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-black hover:file:bg-lime-300';
-
-                // Crear y añadir label e input para la fecha de inicio
-                var startDateLabel = document.createElement('label');
-                startDateLabel.textContent = 'Fecha de inicio';
-                startDateLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
-
-                var startDateInput = document.createElement('input');
-                startDateInput.type = 'date';
-                startDateInput.name = 'start_date';
-                startDateInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-
-                // Crear y añadir label e input para la fecha de fin
-                var endDateLabel = document.createElement('label');
-                endDateLabel.textContent = 'Fecha de fin';
-                endDateLabel.className = 'block text-sm font-medium text-gray-700 mt-4';
-
-                var endDateInput = document.createElement('input');
-                endDateInput.type = 'date';
-                endDateInput.name = 'end_date';
-                endDateInput.className =
-                    'block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm focus:border-lime-300 focus:ring-lime-300';
-
-                // Obtener valores actuales del torneo desde el botón
-                var currentName = button.getAttribute('data-tournament-name');
-                var currentStatus = button.getAttribute('data-tournament-status');
-                var currentDescription = button.getAttribute('data-tournament-description');
-                var currentPhoto = button.getAttribute('data-tournament-photo');
-
-                var currentStartDate = button.getAttribute('data-tournament-start').split('/')
-                    .join('-');
-                var currentEndDate = button.getAttribute('data-tournament-end').split('/').join(
-                    '-');
-
-                // Establecer los valores de los campos del formulario
-                nameInput.value = currentName;
-                descriptionTextarea.value = currentDescription;
-                startDateInput.value = currentStartDate;
-                endDateInput.value = currentEndDate;
-
-                // Seleccionar el estado actual en el select de estado
-                Array.from(statusSelect.options).forEach(option => {
-                    if (option.value === currentStatus) option.selected = true;
-                });
-
-                form.insertBefore(nameLabel, buttonContainer);
-                form.insertBefore(nameInput, buttonContainer);
-                form.insertBefore(statusLabel, buttonContainer);
-                form.insertBefore(statusSelect, buttonContainer);
-                form.insertBefore(descriptionLabel, buttonContainer);
-                form.insertBefore(descriptionTextarea, buttonContainer);
-                form.insertBefore(photoLabel, buttonContainer);
-                form.insertBefore(fileInput, buttonContainer);
-                form.insertBefore(startDateLabel, buttonContainer);
-                form.insertBefore(startDateInput, buttonContainer);
-                form.insertBefore(endDateLabel, buttonContainer);
-                form.insertBefore(endDateInput, buttonContainer);
-
-                var tournamentId = this.getAttribute('data-tournament-id');
-                var clubId = this.getAttribute('data-club');
-                var formAction = `/tournaments/${clubId}/tournament/${tournamentId}`;
-                form.method = "POST";
-                form.action = formAction;
-
-                modal.classList.remove('hidden');
             });
-        });
+        }
 
         /**
          * Modal para eliminar un torneo
          */
         var tournamentDeleteButton = document.querySelectorAll('.tournamentDeleteButton');
-        tournamentDeleteButton.forEach(button => {
-            button.addEventListener('click', function() {
-                cleanForm();
+        if (tournamentDeleteButton.length > 0) {
 
-                contenedorDatos.classList.add('mt-4');
-                modaltitle.textContent = '¿Desea eliminar el torneo?';
+            tournamentDeleteButton.forEach(button => {
+                button.addEventListener('click', function() {
+                    cleanForm();
 
-                let csrfInput = form.querySelector('input[name="_token"]');
-                if (!csrfInput) {
-                    csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content');
-                    form.appendChild(csrfInput);
-                }
+                    contenedorDatos.classList.add('mt-4');
+                    modaltitle.textContent = '¿Desea eliminar el torneo?';
 
-                let methodInput = form.querySelector('input[name="_method"]');
-                if (!methodInput) {
-                    methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'DELETE';
-                    form.appendChild(methodInput);
-                }
+                    let csrfInput = form.querySelector('input[name="_token"]');
+                    if (!csrfInput) {
+                        csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content');
+                        form.appendChild(csrfInput);
+                    }
 
-                var currentName = button.getAttribute('data-tournament-name');
-                var currentStartDate = button.getAttribute('data-tournament-start');
-                var currentEndDate = button.getAttribute('data-tournament-end');
+                    let methodInput = form.querySelector('input[name="_method"]');
+                    if (!methodInput) {
+                        methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        form.appendChild(methodInput);
+                    }
 
-                var divName = document.createElement('div');
-                divName.textContent = currentName;
-                divName.classList.add('text-md');
-                contenedorDatos.appendChild(divName);
+                    var currentName = button.getAttribute('data-tournament-name');
+                    var currentStartDate = button.getAttribute('data-tournament-start');
+                    var currentEndDate = button.getAttribute('data-tournament-end');
 
-                var divDate = document.createElement('div');
-                divDate.textContent = currentStartDate + ' al ' + currentEndDate;
-                divDate.classList.add('text-md');
-                contenedorDatos.appendChild(divDate);
+                    var divName = document.createElement('div');
+                    divName.textContent = currentName;
+                    divName.classList.add('text-md');
+                    contenedorDatos.appendChild(divName);
 
-                var tournamentId = this.getAttribute('data-tournament-id');
-                var clubId = this.getAttribute('data-club');
-                var formAction = `/tournaments/${clubId}/tournament/${tournamentId}`;
-                form.method = "POST";
-                form.action = formAction;
+                    var divDate = document.createElement('div');
+                    divDate.textContent = currentStartDate + ' al ' + currentEndDate;
+                    divDate.classList.add('text-md');
+                    contenedorDatos.appendChild(divDate);
 
-                modal.classList.remove('hidden');
+                    var tournamentId = this.getAttribute('data-tournament-id');
+                    var clubId = this.getAttribute('data-club');
+                    var formAction = `/tournaments/${clubId}/tournament/${tournamentId}`;
+                    form.method = "POST";
+                    form.action = formAction;
+
+                    modal.classList.remove('hidden');
+                });
             });
-        });
+        }
 
         /**
          * Modal de registro en clase
          */
-        document.querySelectorAll('.openclassRegisterButton').forEach(button => {
-            button.addEventListener('click', function() {
+        var openclassRegisterButton = document.querySelectorAll('.openclassRegisterButton');
+        if (openclassRegisterButton.length > 0) {
 
-                cleanForm(); // Limpia el formulario cada vez que cualquier modal se abre
+            openclassRegisterButton.forEach(button => {
+                button.addEventListener('click', function() {
 
-                divPrincipal.classList.add('sm:max-w-xs');
-                contenedorDatos.classList.add('h-36');
+                    cleanForm(); // Limpia el formulario cada vez que cualquier modal se abre
 
-                var classLevel = this.getAttribute('data-class-level');
-                var classCourt = this.getAttribute('data-class-court');
-                var classDate = this.getAttribute('data-class-date');
-                var classStart = this.getAttribute('data-class-start');
-                var classEnd = this.getAttribute('data-class-end');
+                    divPrincipal.classList.add('sm:max-w-xs');
+                    contenedorDatos.classList.add('h-36');
 
-                //Nombre nombre de club
-                modaltitle.textContent = 'Clase de nivel ' + classLevel;
+                    var classLevel = this.getAttribute('data-class-level');
+                    var classCourt = this.getAttribute('data-class-court');
+                    var classDate = this.getAttribute('data-class-date');
+                    var classStart = this.getAttribute('data-class-start');
+                    var classEnd = this.getAttribute('data-class-end');
 
-                // Crear y añadir un div para Fecha
-                var divDate = document.createElement('div');
-                divDate.textContent = classDate;
-                divDate.setAttribute('data-class-date', classDate);
-                divDate.classList.add('text-md');
-                contenedorDatos.appendChild(divDate);
+                    //Nombre nombre de club
+                    modaltitle.textContent = 'Clase de nivel ' + classLevel;
 
-                // Crear y añadir un div para Hora
-                var divStart = document.createElement('div');
-                divStart.textContent = classStart + " a " +
-                    classEnd; // Asumiendo que classStart y classEnd están definidos
-                divStart.setAttribute('data-class-start', classStart);
+                    // Crear y añadir un div para Fecha
+                    var divDate = document.createElement('div');
+                    divDate.textContent = classDate;
+                    divDate.setAttribute('data-class-date', classDate);
+                    divDate.classList.add('text-md');
+                    contenedorDatos.appendChild(divDate);
 
-                // Crear el elemento SVG
-                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttributeNS(null, "viewBox", "0 0 24 24");
-                svg.setAttributeNS(null, "fill", "none");
-                svg.setAttributeNS(null, "stroke-width", "1.5");
-                svg.setAttributeNS(null, "stroke", "currentColor");
-                svg.classList.add(
-                    'size-6'
-                ); // Asumiendo que tienes definido este estilo en algún lugar de tu CSS
+                    // Crear y añadir un div para Hora
+                    var divStart = document.createElement('div');
+                    divStart.textContent = classStart + " a " +
+                        classEnd; // Asumiendo que classStart y classEnd están definidos
+                    divStart.setAttribute('data-class-start', classStart);
 
-                // Crear el path del SVG
-                var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttributeNS(null, "stroke-linecap", "round");
-                path.setAttributeNS(null, "stroke-linejoin", "round");
-                path.setAttributeNS(null, "d",
-                    "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z");
+                    // Crear el elemento SVG
+                    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svg.setAttributeNS(null, "viewBox", "0 0 24 24");
+                    svg.setAttributeNS(null, "fill", "none");
+                    svg.setAttributeNS(null, "stroke-width", "1.5");
+                    svg.setAttributeNS(null, "stroke", "currentColor");
+                    svg.classList.add(
+                        'size-6'
+                    ); // Asumiendo que tienes definido este estilo en algún lugar de tu CSS
 
-                // Añadir el path al SVG
-                svg.appendChild(path);
+                    // Crear el path del SVG
+                    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttributeNS(null, "stroke-linecap", "round");
+                    path.setAttributeNS(null, "stroke-linejoin", "round");
+                    path.setAttributeNS(null, "d",
+                        "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z");
 
-                divStart.classList.add('flex', 'flex-row', 'text-md', 'align-items-center',
-                    'gap-3');
-                // Añadir el SVG al div de la hora
-                divStart.appendChild(svg);
-                // Finalmente, añadir divStart al contenedor
-                contenedorDatos.appendChild(divStart);
+                    // Añadir el path al SVG
+                    svg.appendChild(path);
 
-                // Crear y añadir un div para Pista
-                var divCourt = document.createElement('div');
-                divCourt.textContent = 'Pista ' + classCourt;
-                divCourt.setAttribute('data-class-court', classCourt);
-                divCourt.classList.add('text-md');
-                contenedorDatos.appendChild(divCourt);
+                    divStart.classList.add('flex', 'flex-row', 'text-md', 'align-items-center',
+                        'gap-3');
+                    // Añadir el SVG al div de la hora
+                    divStart.appendChild(svg);
+                    // Finalmente, añadir divStart al contenedor
+                    contenedorDatos.appendChild(divStart);
 
-                let csrfInput = form.querySelector('input[name="_token"]');
-                if (!csrfInput) {
-                    csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = csrfToken;
-                    form.appendChild(csrfInput);
-                }
+                    // Crear y añadir un div para Pista
+                    var divCourt = document.createElement('div');
+                    divCourt.textContent = 'Pista ' + classCourt;
+                    divCourt.setAttribute('data-class-court', classCourt);
+                    divCourt.classList.add('text-md');
+                    contenedorDatos.appendChild(divCourt);
 
-                var classId = this.getAttribute('data-class');
-                var clubId = this.getAttribute('data-club');
-                var formAction = `/club-profile/${clubId}/classes/${classId}/register`;
+                    let csrfInput = form.querySelector('input[name="_token"]');
+                    if (!csrfInput) {
+                        csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+                    }
 
-                form.method = "POST"
+                    var classId = this.getAttribute('data-class');
+                    var clubId = this.getAttribute('data-club');
+                    var formAction = `/club-profile/${clubId}/classes/${classId}/register`;
 
-                form.action = formAction;
-                modal.classList.remove('hidden');
+                    form.method = "POST"
+
+                    form.action = formAction;
+                    modal.classList.remove('hidden');
+                });
             });
-        });
+        }
 
         /**
          * Modal de editar información del club
@@ -1514,15 +1537,12 @@
 
         // Cierra el modal
         closeModal.addEventListener('click', function() {
-
             modal.classList.add('hidden');
-
         });
 
         // Cierra el modal tras darle a confirmar
         closeModal2.addEventListener('click', function() {
             modal.classList.add('hidden');
-
         });
 
     });

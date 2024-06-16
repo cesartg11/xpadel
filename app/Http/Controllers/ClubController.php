@@ -101,48 +101,48 @@ class ClubController extends Controller
      * Display the specified resource.
      */
     public function show(ClubProfile $club)
-{
-    $todayName = Carbon::now()->locale('es')->isoFormat('dddd');
-    $todayHours = $club->hours()->where('day_of_week', $todayName)->first();
-    $pistas = [];
-    $userId = null;
+    {
+        $todayName = Carbon::now()->locale('es')->isoFormat('dddd');
+        $todayHours = $club->hours()->where('day_of_week', $todayName)->first();
+        $pistas = [];
+        $userId = null;
 
-    // Solo recupera el ID del usuario si está autenticado
-    if (auth()->check() && auth()->user()->hasRole('user')) {
-        $userId = auth()->user()->userProfile->id;
-    }
+        // Solo recupera el ID del usuario si está autenticado
+        if (auth()->check() && auth()->user()->hasRole('user')) {
+            $userId = auth()->user()->userProfile->id;
+        }
 
-    if ($todayHours) {
-        $openingHour = Carbon::parse($todayHours->opening_time);
-        $closingHour = Carbon::parse($todayHours->closing_time);
+        if ($todayHours) {
+            $openingHour = Carbon::parse($todayHours->opening_time);
+            $closingHour = Carbon::parse($todayHours->closing_time);
 
-        while ($openingHour->lessThan($closingHour)) {
-            $endTime = (clone $openingHour)->addHour();
+            while ($openingHour->lessThan($closingHour)) {
+                $endTime = (clone $openingHour)->addHour();
 
-            foreach ($club->courts as $court) {
-                $startFormatted = $openingHour->format('Y-m-d H:i:s');
-                $endFormatted = $endTime->format('Y-m-d H:i:s');
+                foreach ($club->courts as $court) {
+                    $startFormatted = $openingHour->format('Y-m-d H:i:s');
+                    $endFormatted = $endTime->format('Y-m-d H:i:s');
 
-                $available = isAvailable($court->id, $startFormatted, $endFormatted);
-                $userRental = false;
+                    $available = isAvailable($court->id, $startFormatted, $endFormatted);
+                    $userRental = false;
 
-                if ($userId) {
-                    $userRental = $court->rental()->where('start_time', $startFormatted)
-                        ->where('end_time', $endFormatted)
-                        ->where('court_id', $court->id)
-                        ->where('user_profile_id', $userId)
-                        ->exists();
+                    if ($userId) {
+                        $userRental = $court->rental()->where('start_time', $startFormatted)
+                            ->where('end_time', $endFormatted)
+                            ->where('court_id', $court->id)
+                            ->where('user_profile_id', $userId)
+                            ->exists();
+                    }
+
+                    $pistas[$court->id][$startFormatted] = $userRental ? 'user' : ($available ? 'available' : 'occupied');
                 }
 
-                $pistas[$court->id][$startFormatted] = $userRental ? 'user' : ($available ? 'available' : 'occupied');
+                $openingHour->addHour();
             }
-
-            $openingHour->addHour();
         }
-    }
 
-    return view('clubs.show', compact('club', 'pistas'));
-}
+        return view('clubs.show', compact('club', 'pistas'));
+    }
 
 
     /**
@@ -156,7 +156,7 @@ class ClubController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClubRequest $request, User $user, ClubProfile $clubProfile)
+    public function update(UpdateClubRequest $request, User $user,)
     {
 
         $userReal = auth()->user();
@@ -168,7 +168,7 @@ class ClubController extends Controller
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
-        if ($userReal->clubProfile->id !== $clubProfile->id) {
+        if ($userReal->clubProfile->id !== $user->clubProfile->id) {
             return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
@@ -206,6 +206,7 @@ class ClubController extends Controller
                 $profilePhoto = $clubProfile->photos()->where('photo_type', 'perfil')->first();
 
                 if ($profilePhoto) {
+                    Storage::disk('discoImagenesClubs')->delete($profilePhoto);
                     $profilePhoto->update(['photo_url' => $storedPhotoUrl]);
                 } else {
                     $clubProfile->photos()->create([
