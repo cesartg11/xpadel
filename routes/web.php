@@ -59,13 +59,13 @@ Route::prefix('tournaments')->group(function () {
 });
 
 // Rutas de usuarios
-Route::prefix('users')->middleware('auth')->group(function () {
+Route::prefix('users')->group(function () {
     Route::get('/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/', [UserController::class, 'store'])->name('users.store');
-    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/misActividades', [UserController::class, 'misActividades'])->name('users.misActividades');
+    Route::get('/{user}/edit', [UserController::class, 'edit'])->middleware(['auth', 'role:user'])->name('users.edit');
+    Route::put('/{user}', [UserController::class, 'update'])->middleware(['auth', 'role:user'])->name('users.update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->middleware(['auth', 'role:user'])->name('users.destroy');
+    Route::get('/misActividades', [UserController::class, 'misActividades'])->middleware(['auth', 'role:user'])->name('users.misActividades');
 });
 
 
