@@ -9,6 +9,15 @@ class CreateUserRequest extends FormRequest
 {
 
     /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+
+    /**
      * Validaciones para el request
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
