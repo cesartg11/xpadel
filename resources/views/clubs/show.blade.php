@@ -318,7 +318,7 @@
                                         </svg>
                                     </button>
                                 @else
-                                    <a href="{{ route('tournaments.show') }}"
+                                    <a href="{{ route('tournaments.show', $tournament) }}"
                                         class="inline-block px-4 py-2 text-black rounded bg-lime-300 hover:bg-lime-400 text-center">
                                         Ver
                                     </a>
