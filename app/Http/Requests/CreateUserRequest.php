@@ -16,7 +16,6 @@ class CreateUserRequest extends FormRequest
         return true;
     }
 
-
     /**
      * Validaciones para el request
      *
