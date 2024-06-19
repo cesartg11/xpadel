@@ -20,11 +20,23 @@ class ClubProfileFactory extends Factory
 
     public function definition(): array
     {
+        $provincias = [
+            "Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila",
+            "Badajoz", "Baleares", "Barcelona", "Burgos", "Cáceres", "Cádiz",
+            "Cantabria", "Castellón", "Ciudad Real", "Córdoba", "La Coruña",
+            "Cuenca", "Girona", "Granada", "Guadalajara", "Guipúzcoa", "Huelva",
+            "Huesca", "Jaén", "León", "Lleida", "Lugo", "Madrid", "Málaga",
+            "Murcia", "Navarra", "Ourense", "Palencia", "Las Palmas", "Pontevedra",
+            "La Rioja", "Salamanca", "Segovia", "Sevilla", "Soria", "Tarragona",
+            "Santa Cruz de Tenerife", "Teruel", "Toledo", "Valencia", "Valladolid",
+            "Vizcaya", "Zamora", "Zaragoza"
+        ];
+
         return [
             'name' => fake()->company(),
             'telephone' => fake()->phoneNumber(),
             'address' => fake()->address(),
-            'province' => fake()->state(),
+            'province' => fake()->randomElement($provincias),
             'description' => fake()->paragraph(),
         ];
     }

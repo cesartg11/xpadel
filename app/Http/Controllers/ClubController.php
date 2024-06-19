@@ -144,61 +144,59 @@ class ClubController extends Controller
         return view('clubs.show', compact('club', 'pistas'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user, ClubProfile $clubProfile)
-    {
-        return view('clubs.edit', compact('user', 'clubProfile'));
-    }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClubRequest $request, User $user,)
+    public function update(UpdateClubRequest $request, $userId)
     {
-
+        $user = User::findOrFail($userId);
         $userReal = auth()->user();
-        if (!auth()->check() || !$userReal->clubProfile) {
-            return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
+
+        if (!$userReal || $userReal->id != $user->id || !$userReal->hasRole('club')) {
+            return redirect()->route('login')->with('error', 'No tienes permisos suficientes.');
         }
 
-        if (!$userReal->hasRole('club')) {
-            return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar esta acción.');
-        }
+        $clubProfile = $user->clubProfile;
 
-        if ($userReal->clubProfile->id !== $user->clubProfile->id) {
-            return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
+        if (!$user->clubProfile) {
+            return redirect()->route('clubs.index')->with('error', 'Perfil de club no encontrado.');
         }
 
         try {
 
             DB::beginTransaction();
 
+            $data = $request->validated();
+
             $user->update([
-                'email' => $request->email,
+                'email' => $data['email'],
                 //'password' => bcrypt($request->password),
             ]);
 
-            $clubProfile = $user->clubProfile();
-
-            $clubProfile->upadte([
+            $clubProfile->update([
                 'name' => $request->name,
                 'telephone' => $request->telephone,
                 'address' => $request->address,
                 'province' => $request->province,
             ]);
 
-            // Borrar y crear horarios y fotos
-            $clubProfile->hours()->delete();
+            // Días de la semana
+            $days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
-            foreach ($request->day_of_week as $index => $day) {
-                $clubProfile->hours()->create([
-                    'day_of_week' => $day,
-                    'opening_time' => $request->opening_time[$index],
-                    'closing_time' => $request->closing_time[$index],
-                ]);
+            foreach ($days as $day) {
+                $openingTime = $request->input($day . '_apertura');
+                $closingTime = $request->input($day . '_cierre');
+
+                if ($openingTime && $closingTime) {
+
+                    $clubProfile->hours()->updateOrCreate(
+                        ['day_of_week' => $day, 'club_profile_id' => $clubProfile->id],
+                        [
+                            'opening_time' => $openingTime,
+                            'closing_time' => $closingTime
+                        ]
+                    );
+                }
             }
 
             if ($request->hasFile('photo_url')) {
@@ -206,7 +204,7 @@ class ClubController extends Controller
                 $profilePhoto = $clubProfile->photos()->where('photo_type', 'perfil')->first();
 
                 if ($profilePhoto) {
-                    Storage::disk('discoImagenesClubs')->delete($profilePhoto);
+                    Storage::disk('discoImagenesClubs')->delete($profilePhoto->photo_url);
                     $profilePhoto->update(['photo_url' => $storedPhotoUrl]);
                 } else {
                     $clubProfile->photos()->create([
@@ -217,10 +215,10 @@ class ClubController extends Controller
             }
 
             DB::commit();
-            return redirect('clubs.index')->with('success', 'Pérfil de club modificado con éxito');
+            return redirect()->back()->with('success', 'Pérfil de club modificado con éxito');
         } catch (Exception $e) {
             DB::rollback();
-            return redirect('clubs.index')->withErrors('Error al modificar el club. ' . $e->getMessage());
+            return redirect()->back()->withErrors('Error al modificar el club. ' . $e->getMessage());
         }
     }
 
@@ -279,7 +277,7 @@ class ClubController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Foto modificada con éxito');
         } catch (Exception $e) {
             dd($e->getMessage());
             DB::rollback();
@@ -336,7 +334,7 @@ class ClubController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Información de club modificados con éxito');
         } catch (Exception $e) {
             dd($e->getMessage());
             DB::rollback();

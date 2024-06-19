@@ -12,7 +12,7 @@ class ClubHour extends Model
     protected $table = 'club_hours';
 
     protected $fillable = [
-        'club_profile_id', 'day_of_week', 'open_time', 'close_time'
+        'club_profile_id', 'day_of_week', 'opening_time', 'closing_time'
     ];
 
     /**

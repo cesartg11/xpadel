@@ -25,7 +25,7 @@ class CreateUpdateTournamentRequest extends FormRequest
             'name' => 'required|string|max:255',
             'status' => 'required|string|in:Abierto,Cerrado,En progreso',
             'description' => 'required|string|max:5000',
-            'photo_url' => 'nullable|file|mimes:jpeg,jpg,png',
+            'photo_url' => 'nullable|mimes:jpeg,jpg,png',
             'start_date' => 'required|date_format:"Y-m-d"',
             'end_date' => 'required|date_format:"Y-m-d"|after:start_date',
         ];

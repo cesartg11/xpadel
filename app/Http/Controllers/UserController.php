@@ -10,6 +10,7 @@ use App\Models\UserProfile;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -77,12 +78,23 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
 
-        if (!auth()->check() || !$user->userProfile) {
+        $userReal = auth()->user();
+        if (!auth()->check() || !$userReal->userProfile) {
             return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
 
         if (!$user->hasRole('user')) {
             return redirect()->route('clubs.index', compact('club'))->with('error', 'No tienes permiso para realizar esta acción.');
+        }
+
+        $userProfile = UserProfile::where('user_id', $user->id)->first();
+
+        if (!$userProfile) {
+            return redirect()->route('clubs.index')->with('error', 'Perfil de club no encontrado.');
+        }
+
+        if ($userReal->userProfile->id !== $userProfile->id) {
+            return redirect()->route('clubs.index')->with('error', 'No tienes permiso para realizar acciones en este club.');
         }
 
         DB::beginTransaction();
@@ -93,17 +105,28 @@ class UserController extends Controller
 
             $user->update([
                 'email' => $validatedData['email'],
-                // Actualiza la contraseña solo si se proporciona una nueva
-                'password' => isset($validatedData['password']) ? bcrypt($validatedData['password']) : $user->password,
+                //'password' => isset($validatedData['password']) ? bcrypt($validatedData['password']) : $user->password,
             ]);
 
-            // Crear el perfil del usuario
-            $user->userProfile()->update([
+            if ($request->hasFile('profile_photo_path')) {
+                // Borrar la imagen antigua si existe
+                if ($userProfile->profile_photo_path) {
+                    Storage::disk('discoImagenesUsers')->delete($userProfile->profile_photo_path);
+                }
+                // Guardar la nueva imagen y obtener la ruta
+                $path = $request->file('profile_photo_path')->store('users_profile_photo', 'discoImagenesUsers');
+            } else {
+                // Mantener la ruta antigua si no hay archivo nuevo
+                $path = $userProfile->profile_photo_path;
+            }
+
+            // Actualizar el perfil del usuario
+            $userProfile->update([
                 'name' => $request->name,
                 'surname' => $request->surname,
                 'age' => $request->age,
                 'telephone' => $request->telephone,
-                'profile_photo_path' => $request->hasFile('profile_photo_path') ? $request->file('profile_photo_path')->store('users_profile_photo', 'discoImagenesUsers') : null,
+                'profile_photo_path' => $path,  // Usar la nueva o antigua ruta de la imagen
             ]);
 
             DB::commit();
@@ -128,6 +151,26 @@ class UserController extends Controller
             return redirect('/users')->with('success', 'Usuario eliminado con éxito.');
         } catch (Exception $e) {
             return redirect('/users')->with('error', 'No se pudo eliminar el usuario. ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Muestra las actividades del usuario
+     */
+    public function misActividades()
+    {
+        if (auth()->check()) {
+            $user = auth()->user(); // Obtener el usuario actual
+            $userProfile = $user->userProfile;
+
+            $alquileres = $userProfile->alquileres()->with('court')->get();
+            $clases = $userProfile->clases()->with('clubClass')->get();
+            $torneos = $userProfile->torneos()->with('tournament')->get();
+
+            // Pasar datos a la vista
+            return view('users.misActividades', compact('alquileres', 'clases', 'torneos'));
+        } else {
+            return redirect()->route('login')->with('error', 'Necesitas iniciar sesión para realizar esta acción.');
         }
     }
 }

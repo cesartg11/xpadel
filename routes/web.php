@@ -15,8 +15,7 @@ Route::prefix('clubs')->group(function () {
     Route::get('/', [ClubController::class, 'index'])->name('clubs.index');
     Route::post('/', [ClubController::class, 'store'])->name('clubs.store');
     Route::get('/{club}', [ClubController::class, 'show'])->name('clubs.show');
-    Route::get('/{club}/edit', [ClubController::class, 'edit'])->middleware(['auth', 'role:club'])->name('clubs.edit');
-    Route::put('/{club}', [ClubController::class, 'update'])->middleware(['auth', 'role:club'])->name('clubs.update');
+    Route::put('/{userId}', [ClubController::class, 'update'])->middleware(['auth', 'role:club'])->name('clubs.update');
     Route::delete('/{club}', [ClubController::class, 'delete'])->middleware(['auth', 'role:administrador'])->name('clubs.delete');
     Route::post('/{clubProfile}/cabecera', [ClubController::class, 'cabecera'])->middleware(['auth', 'role:club'])->name('clubs.cabecera');
     Route::post('/{clubProfile}/edit-details', [ClubController::class, 'updateDetails'])->middleware(['auth', 'role:club'])->name('clubs.updateDetails');
@@ -44,8 +43,13 @@ Route::group(['prefix' => 'club-profile/{clubProfile}'], function () {
     Route::delete('classes/{class}/registration/{registration}', [ClubClassController::class, 'destroyRegistration'])->middleware(['auth', 'role:user'])->name('classes.destroyRegistration');
 });
 
+// Ruta para obtener los datos de los torneos
+Route::get('/api/tournaments', [TournamentController::class, 'datosTorneos'])->name('tournaments.datosTorneos');
+
 //Rutas para torneos
 Route::prefix('tournaments')->group(function () {
+    Route::get('/', [TournamentController::class, 'index'])->name('tournaments.index');
+    Route::get('/{tournament}', [TournamentController::class, 'show'])->name('tournaments.show');
     Route::post('/{clubId}/store', [TournamentController::class, 'store'])->middleware(['auth', 'role:club'])->name('tournaments.store');
     Route::put('/{club}/tournament/{tournament}', [TournamentController::class, 'update'])->middleware(['auth', 'role:club'])->name('tournaments.update');
     Route::delete('/{club}/tournament/{tournament}', [TournamentController::class, 'destroy'])->middleware(['auth', 'role:club'])->name('tournaments.destroy');
@@ -61,6 +65,7 @@ Route::prefix('users')->middleware('auth')->group(function () {
     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/misActividades', [UserController::class, 'misActividades'])->name('users.misActividades');
 });
 
 

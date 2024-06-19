@@ -17,7 +17,8 @@
             <img src="{{ asset('assets/imagenes/nombre.png') }}" alt="logo" class="w-5/6 h-10">
 
             <div class="flex flex-row ml-5">
-                <a href="{{ route('clubs.index') }}" class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
+                <a href="{{ route('clubs.index') }}"
+                    class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -28,7 +29,7 @@
             </div>
 
             <div class="flex flex-row align-content-center gap-1 ml-5">
-                <a href="#" class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
+                <a href="{{ route('tournaments.index') }}" class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -52,7 +53,8 @@
 
                 @role('club')
                     <div class="flex flex-row align-content-center gap-1 ml-5">
-                        <a href="{{ route('clubs.show', auth()->user()->clubProfile) }}" class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
+                        <a href="{{ route('clubs.show', auth()->user()->clubProfile) }}"
+                            class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
                             <img src="{{ asset('assets/imagenes/tennis-ball-svgrepo-com.svg') }}" alt="Pelota de tenins"
                                 class="size-5">
                             Mi club
@@ -60,7 +62,7 @@
                     </div>
                 @else
                     <div class="flex flex-row align-content-center gap-1 ml-5">
-                        <a href="#" class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
+                        <a href="{{ route('users.misActividades') }}" class="block px-4 py-2 text-sm flex flex-row justify-center align-items-center gap-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -88,15 +90,17 @@
                     class="w-12 h-12 rounded-full overflow-hidden flex justify-center align-items-center hover:bg-gray-100 cursor-pointer">
                     @role('club')
                         @php
-                            $profilePhoto = auth()->user()->clubProfile->photos->where('photo_type', 'perfil')->first();
-                            $photoUrl = $profilePhoto ? 'storage/' . $profilePhoto->photo_url : null;
+                            $auth = auth()->user();
+                            $clubProfile = $auth->clubProfile;
+                            $profilePhoto = $clubProfile->photos->where('photo_type', 'perfil')->first();
+                            $photoUrl = $profilePhoto ? 'assets/clubs/' . $profilePhoto->photo_url : null;
                         @endphp
                         @if ($photoUrl)
-                            <img src="{{ asset('storage/' . $photoUrl) }}" alt="Foto de pérfil"
-                                class="w-full h-full object-cover">
+                            <img src="{{ asset($photoUrl) }}" alt="Foto de pérfil" class="w-full h-full object-cover">
                         @else
-                            <svg class="h-full w-8 text-black" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-full w-8 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <circle cx="12" cy="7" r="4" />
                                 <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -107,8 +111,9 @@
                             <img src="{{ asset('assets/users/' . auth()->user()->userProfile->profile_photo_path) }}"
                                 class="w-full h-full object-cover">
                         @else
-                            <svg class="h-full w-8 text-black" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-full w-8 text-black" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <circle cx="12" cy="7" r="4" />
                                 <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -129,17 +134,20 @@
                             @else
                                 {{ auth()->user()->userProfile->name }}</p>
                             @endrole
-                            <p class="text-gray-700 block px-4 py-2 text-sm" role="menuitem">{{ auth()->user()->email }}
-                            </p>
+                            <p class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                                style="overflow: hidden; text-overflow: ellipsis;  white-space: nowrap;">
+                                {{ auth()->user()->email }}</p>
                             <hr class="my-2">
-                            <a href="{{ route('users.edit', ['user' => auth()->user()->id]) }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" id="menu-item-0">Perfil</a>
+                            <a href="{{ route('users.edit', ['user' => auth()->user()->id]) }}"
+                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" id="menu-item-0">Perfil</a>
 
                             <form method="POST" action="{{ route('logout') }}" role="none">
                                 @csrf
-                                <button type="submit" class="text-gray-700 block w-full px-4 py-2 text-left text-sm"
+                                <button type="submit"
+                                    class="flex flex-row justify-left items-center gap-2 text-gray-700 block w-full px-4 py-2 text-left text-sm"
                                     role="menuitem" tabindex="-1" id="menu-item-3">
                                     Cerrar sesión
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-full"
                                         fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd"
                                             d="M10 12.5a.5.5 0 01-.5.5h-8a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h8a.5.5 0 01.5.5v2a.5.5 0 001 0v-2A1.5 1.5 0 009.5 2h-8A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h8a1.5 1.5 0 001.5-1.5v-2a.5.5 0 00-1 0v2z" />

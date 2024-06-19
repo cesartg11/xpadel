@@ -12,10 +12,29 @@ use App\Models\TournamentMatch;
 use App\Models\TournamentRegistration;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
 use function App\isAvailable;
 
 class TournamentController extends Controller
 {
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $tournaments = Tournament::all();
+        return view('tournaments.index', compact('tournaments'));
+    }
+
+    public function datosTorneos(Request $request)
+    {
+        $query = $request->input('search');
+        $tournaments = Tournament::where('name', 'LIKE', '%' . $query . '%')->get();
+
+        return response()->json($tournaments); // Devuelve los resultados como JSON
+    }
+
 
     /**
      * Crea un nuevo alquiler en una pista de un club determinado
@@ -52,6 +71,14 @@ class TournamentController extends Controller
         } catch (Exception $e) {
             return redirect()->route('clubs.show', compact('club'))->with('error', 'No se pudo crear el torneo. ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Tournament $tournament)
+    {
+        return view('tournaments.show', compact('tournament'));
     }
 
     /**

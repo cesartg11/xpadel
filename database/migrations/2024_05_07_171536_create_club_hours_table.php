@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('club_profile_id')->constrained('club_profile');
             $table->enum('day_of_week', ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']);
-            $table->time('opening_time');
-            $table->time('closing_time');
+            $table->time('opening_time')->nullable();
+            $table->time('closing_time')->nullable();
             $table->timestamps();
         });
     }

@@ -121,13 +121,21 @@
                                 @for ($hour = $openingHour; $hour <= $closingHour; $hour++)
                                     @php
                                         // Ajusta la hora actual al inicio de la hora específica
-                                        $currentHour = \Carbon\Carbon::now()
-                                            ->setTime((int) $hour, 0, 0)
-                                            ->format('Y-m-d H:i:s');
-                                        $slotStatus = $pistas[$court->id][$currentHour] ?? 'available'; // Defaults to available
+                                        $hourDateTime = \Carbon\Carbon::now()->setTime($hour, 0);
+                                        $now = \Carbon\Carbon::now()->addHours(2);
+                                        $slotClass = $now->greaterThan($hourDateTime)
+                                            ? 'bg-gray-300'
+                                            : 'clickable hover:bg-lime-200 cursor-pointer';
+                                        $slotClass .=
+                                            $slotClass === 'clickable hover:bg-lime-200 cursor-pointer'
+                                                ? ' bg-white'
+                                                : '';
+                                        $currentHourFormatted = $hourDateTime->format('Y-m-d H:i:s');
+                                        $slotStatus = $pistas[$court->id][$currentHourFormatted] ?? 'available'; // Defaults to available
                                     @endphp
                                     <div id="slot-{{ $court->id }}-{{ $court->number }}-{{ $hour }}-{{ $club->id }}"
-                                        class="flex-1 {{ $slotStatus === 'user' ? 'bg-lime-300' : ($slotStatus === 'occupied' ? 'bg-gray-300' : 'bg-white clickable hover:bg-lime-200 cursor-pointer') }} border">
+                                        class="flex-1 {{ $slotStatus === 'user' ? 'bg-lime-300' : ($slotStatus === 'occupied' ? 'bg-gray-300' : $slotClass) }} border">
+                                        <!-- Puedes agregar contenido adicional aquí si es necesario -->
                                     </div>
                                 @endfor
                             </div>
@@ -1157,6 +1165,8 @@
                 form.insertBefore(startDateInput, buttonContainer);
                 form.insertBefore(endDateLabel, buttonContainer);
                 form.insertBefore(endDateInput, buttonContainer);
+
+                form.setAttribute('enctype', 'multipart/form-data');
 
                 var clubId = this.getAttribute('data-club');
                 var formAction = `/tournaments/${clubId}/store`;

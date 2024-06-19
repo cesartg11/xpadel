@@ -27,13 +27,13 @@ class UpdateUserRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($this->user), // Asegúrate de pasar el modelo de usuario adecuado
+                Rule::unique('users')->ignore($this->user),
             ],
             //'password' => 'required|min:6',
             // Añadir validaciones para los campos del perfil
             'name' => 'required|max:255',
             'surname' => 'required|max:255',
-            'age' => 'required|integer',
+            'age' => 'required|integer|max:120|min:0',
             'telephone' => 'required',
             'profile_photo_path' => 'nullable|file|mimes:jpeg,jpg,png'
         ];
@@ -58,6 +58,8 @@ class UpdateUserRequest extends FormRequest
             'surname.max' => 'El apellido no debe exceder los 255 caracteres.',
             'age.required' => 'Por favor, ingresa tu edad.',
             'age.integer' => 'La edad debe ser un número entero.',
+            'age.max' => 'La edad debe ser un número menor de 120.',
+            'age.min' => 'La edad debe ser un número mayor de 0.',
             'telephone.required' => 'Es necesario ingresar un número de teléfono.',
             'profile_photo_path.file' => 'Debes subir un archivo válido para la foto de perfil.',
             'profile_photo_path.mimes' => 'La foto de perfil debe ser de tipo jpeg, jpg, o png.'
